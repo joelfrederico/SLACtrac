@@ -28,8 +28,8 @@ def bendmat(
 		angle=0,
 		order=1,
 		fse=0,
-		k1=0,
-		k2=0
+		K1=0,
+		K2=0
 	   ):
 
 	if (( length==0 ) or ( angle==0 )):
@@ -37,8 +37,8 @@ def bendmat(
 
 	h     = angle/length            # /* coordinate system curvature */
 	ha    = h*(1+fse)               # /* actual curvature due to bending field */
-	n     = -k1/np.square(h)              # /* field index */
-	beta  = k2/2/pow(h,3)            # /* sextupole index */
+	n     = -K1/np.square(h)              # /* field index */
+	beta  = K2/2/pow(h,3)            # /* sextupole index */
 	gamma = 0
 
 	t0=length
