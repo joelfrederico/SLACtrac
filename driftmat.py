@@ -5,14 +5,14 @@ from baseclass import baseclass
 class Drift(baseclass):
 	def __init__(self,length=0,order=1):
 		self._type = 'drift'
-		self._length = length
-		self._order = order
+		self._length = float(length)
+		self._order = int(order)
 
 	def _Rfunc(self):
 		self._R = driftmat(self._length,self._order)
 
 	def _change_E(self,old_gamma,new_gamma):
-		if ( not self._R == None ):
+		if not ( self._R == None ):
 			self._Rfunc()
 
 def driftmat(l=0,order=1):

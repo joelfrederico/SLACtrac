@@ -6,9 +6,9 @@ from baseclass import baseclass
 class Bend(baseclass):
 	def __init__(self,length=0,angle=0,order=1):
 		self._type = 'bend'
-		self._length = length
-		self._order = order
-		self._angle = angle
+		self._length = float(length)
+		self._order = int(order)
+		self._angle = float(angle)
 		self._R = None
 
 	def _Rfunc(self):

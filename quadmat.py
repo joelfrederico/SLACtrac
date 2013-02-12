@@ -6,9 +6,9 @@ from baseclass import baseclass
 class Quad(baseclass):
 	def __init__(self,length=0,K1=0,order=1):
 		self._type = 'quad'
-		self._length = length
-		self._K1 = K1
-		self._order = order
+		self._length = float(length)
+		self._K1 = float(K1)
+		self._order = int(order)
 		self._R = None
 
 	def _Rfunc(self):
