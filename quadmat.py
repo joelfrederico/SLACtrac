@@ -8,6 +8,7 @@ class Quad(baseclass):
 		self._type = 'quad'
 		self._length = float(length)
 		self._K1 = float(K1)
+		# print 'K1 is {}'.format(K1)
 		self._order = int(order)
 		self._R = None
 
@@ -16,6 +17,7 @@ class Quad(baseclass):
 
 	def _change_E(self,old_gamma,new_gamma):
 		self._K1 *= old_gamma / new_gamma
+		# print self._K1
 		if ( not self._R == None ):
 			self._Rfunc()
 

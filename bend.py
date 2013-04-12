@@ -4,19 +4,35 @@ from driftmat import driftmat
 from baseclass import baseclass
 
 class Bend(baseclass):
-	def __init__(self,length=0,angle=0,order=1):
+	def __init__(self,length=0,angle=0,order=1,rotate=0):
 		self._type = 'bend'
 		self._length = float(length)
 		self._order = int(order)
 		self._angle = float(angle)
 		self._R = None
+		self._rotate=rotate
 
 	def _Rfunc(self):
-		self._R = bendmat(
+		temp = bendmat(
 				length=self._length,
 				angle=self._angle,
 				order=self._order
 				)
+		if self._rotate == 90:
+				self._R = np.zeros([6,6])
+				self._R[0:2,0:2] = temp[2:4,2:4]
+				self._R[2:4,0:2] = temp[0:2,2:4]
+				self._R[0:2,5] = temp[2:4,5]
+				self._R[0:2,2:4] = temp[2:4,0:2]
+				self._R[2:4,2:4] = temp[0:2,0:2]
+				self._R[2:4,5] = temp[0:2,5]
+				self._R[4:6,0:2] = temp[4:6,2:4]
+				self._R[4:6,2:4] = temp[4:6,0:2]
+				self._R[4:6,4:6] = temp[4:6,4:6]
+				# print 'hi'
+		else:
+				self._R = temp
+				# print 'hi'
 
 	def _change_E(self,old_gamma,new_gamma):
 		self._angle *= old_gamma / new_gamma
