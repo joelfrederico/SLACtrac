@@ -43,6 +43,7 @@ class Beamline(baseclass):
 		self._history = temp
 		for element in self.elements:
 			element._change_E(self._gamma,gamma)
+			element._gamma = gamma
 		self._gamma = gamma
 		if not (self.R == None):
 			self.calc_mat()
