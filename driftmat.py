@@ -8,12 +8,13 @@ class Drift(baseclass):
 		self._length = float(length)
 		self._order = int(order)
 
-	def _Rfunc(self):
-		self._R = driftmat(self._length,self._order)
+	# Define transfer matrix property R
+	def get_R(self):
+		return driftmat(self._length,self._order)
+	R = property(get_R)
 
-	def _change_E(self,old_gamma,new_gamma):
-		if not ( self._R == None ):
-			self._Rfunc()
+	def change_E(self,old_gamma,new_gamma):
+		pass
 
 def driftmat(l=0,order=1):
 	R_small = np.array(

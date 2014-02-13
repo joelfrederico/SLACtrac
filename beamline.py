@@ -4,12 +4,10 @@ from baseclass import baseclass
 import copy as _copy
 
 class Beamline(baseclass):
+	_type    = 'beamline'
+	_order   = int(1)
 	def __init__(self,element_list=None,gamma=None,twisspars=[None,None]):
-		self._type    = 'beamline'
-		self._length  = float(0)
-		self._order   = int(1)
 		self._gamma   = float(gamma)
-		self.R        = None
 		# print len(element_list)
 		self.twiss = twiss(twisspars[0],twisspars[1])
 		self.elements = _np.array([])
@@ -18,51 +16,44 @@ class Beamline(baseclass):
 			self.elements = _np.append(self.elements,_copy.deepcopy(element))
 		for element in self.elements:
 			element._gamma = self._gamma
-			self._length += element._length
 			if ( element._order > self._order ):
 				self._order = element._order
 
 		# Preserve settings
 		self._history = _np.array([self])
 
-	def calc_mat(self):
-		self.R = _np.identity(6)
+	# Define property length
+	def get_length(self):
+		length = 0
+		for element in self.elements:
+			length += element._length
+		return length
+	length = property(get_length,doc='The length of the beamline.')
+
+	# Define transfer matrix R property
+	def getR(self):
+		R = _np.identity(6)
 		T = _np.array([[self.twiss.beta,-self.twiss.alpha],[-self.twiss.alpha,self.twiss.gamma]])
 		self.betaf = _np.zeros(len(self.elements)+1)
 		self.betaf[0] = self.twiss.beta
 		for i,element in enumerate(self.elements):
-		# for element in self.elements:
-			element._Rfunc()
-			self.R = _np.dot(element._R,self.R)
-			T2 = _np.dot(_np.dot(self.R[0:2,0:2],T),_np.transpose(self.R[0:2,0:2]))
+			# element._Rfunc()
+			R = _np.dot(element.R,R)
+			T2 = _np.dot(_np.dot(R[0:2,0:2],T),_np.transpose(R[0:2,0:2]))
 			self.betaf[i+1] = T2[0,0]
+		return R
+	R = property(getR,doc='The transfer matrix R for the beamline.')
 
-	def change_energy(self,gamma):
-		temp = self._history
-		self = self._history[0]
-		self._history = temp
+	# Define gamma property for beamlines
+	# If you change gamma, it changes for all elements
+	def get_gamma(self):
+		return self._gamma
+	def set_gamma(self,gamma):
 		for element in self.elements:
-			element._change_E(self._gamma,gamma)
-			element._gamma = gamma
+			# Changes energy of element
+			element.change_E(self._gamma,gamma)
 		self._gamma = gamma
-		if not (self.R == None):
-			self.calc_mat()
-		# Add new settings to the history
-		self._history = _np.append(self._history,self)
-
-	def __setattr__(self,name,value):
-		# Generally, set attribute
-		super(Beamline,self).__setattr__(name,value)
-
-		# If 'elements' changes, calc R matrix after.
-		if name=='elements':
-			print 'Recalculating matrix for beamline...'
-			self.calc_mat()
-
-	def reset(self):
-		temp = self._history
-		self = self._history[0]
-		self._history = _np.append(temp,self)
+	gamma = property(get_gamma,set_gamma)
 
 class twiss:
 	def __init__(self,beta=None,alpha=None):

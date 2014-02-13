@@ -8,33 +8,14 @@ class Quad(baseclass):
 		self._order = int(order)
 		self._type = 'quad'
 		self._length = float(length)
-		self._K1 = float(K1)
-		# print 'K1 is {}'.format(K1)
-		self._R = None
+		self.K1 = float(K1)
 
-	def _Rfunc(self):
-		self._R = quadmat(L=self._length,K1=self._K1,order=self._order)
+	def getR(self):
+		return quadmat(L=self._length,K1=self.K1,order=self._order)
+	R = property(getR,doc='The transfer matrix R for the quad.')
 
-	# Works for gamma, E= gamma * mc^2.
-	def _change_E(self,old_gamma,new_gamma):
-		self._K1 *= old_gamma / new_gamma
-		# print self._K1
-		if ( not self._R == None ):
-			self._Rfunc()
-
-	def _change_K(self,K1):
-		self._K1 = K1
-		if ( not self._R == None ):
-			self._Rfunc()
-
-	def __setattr__(self,name,value):
-		# Generally, set attribute
-		super(Quad,self).__setattr__(name,value)
-
-		# If 'elements' changes, calc R matrix after.
-		if name=='_K1':
-			print 'Recalculating R matrix for quad...'
-			self._Rfunc()
+	def change_E(self,old_gamma,new_gamma):
+		self.K1 *= old_gamma / new_gamma
 
 def quadmat(K1=0,L=0,order=1):
 	if ( K1 == 0 ):
