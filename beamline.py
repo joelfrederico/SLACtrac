@@ -7,10 +7,10 @@ from twiss import Twiss as _Twiss
 class Beamline(baseclass):
 	_type    = 'beamline'
 	_order   = int(1)
-	def __init__(self,element_list,gamma,twiss):
+	def __init__(self,element_list,gamma,twiss_x,twiss_y):
 		self._gamma   = float(gamma)
 		# print len(element_list)
-		self.twiss = twiss
+		self.twiss_x = twiss_x
 		self.elements = _np.array([])
 
 		for element in element_list:
@@ -47,7 +47,9 @@ class Beamline(baseclass):
 		self._gamma = gamma
 	gamma = property(_get_gamma,_set_gamma)
 
-	def _get_twiss_end(self):
-		return self.twiss.transport(self.R)
-	twiss_end = property(_get_twiss_end)
+	def _get_twiss_x_end(self):
+		return self.twiss_x.transport(self.R[0:2,0:2])
+	twiss_x_end = property(_get_twiss_x_end)
 
+	def spotsize_x_end(self,emit):
+		return self.twiss_x_end.spotsize(emit)
