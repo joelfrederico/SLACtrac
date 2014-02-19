@@ -9,7 +9,7 @@ class Twiss(object):
 	# Validate beta > 0
 	def _set_beta(self,value):
 		if not (value > 0):
-			raise ValueError('Beta must be greater than zero.')
+			raise ValueError('Beta must be greater than zero: requested beta={}.'.format(value))
 		self._beta=value
 	def _get_beta(self):
 		return self._beta
