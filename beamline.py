@@ -8,7 +8,7 @@ class Beamline(baseclass):
 	_type    = 'beamline'
 	_order   = int(1)
 	def __init__(self,element_list,gamma,twiss_x,twiss_y):
-		self._gamma   = float(gamma)
+		self._gamma   = _np.float64(gamma)
 		# print len(element_list)
 		self.twiss_x = twiss_x
 		self.elements = _np.array([])
@@ -41,6 +41,7 @@ class Beamline(baseclass):
 	def _get_gamma(self):
 		return self._gamma
 	def _set_gamma(self,gamma):
+		gamma = _np.float64(gamma)
 		for element in self.elements:
 			# Changes energy of element
 			element.change_E(self._gamma,gamma)

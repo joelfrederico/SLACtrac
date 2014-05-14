@@ -1,15 +1,13 @@
-import scipy as sp
-import numpy as np
+import numpy as _np
 from driftmat import driftmat
 from baseclass import baseclass
 
 class Bend(baseclass):
 	def __init__(self,length=0,angle=0,order=1,rotate=0):
 		self._type = 'bend'
-		self._length = float(length)
+		self._length = _np.float64(length)
 		self._order = int(order)
-		self._angle = float(angle)
-		self._R = None
+		self._angle = _np.float64(angle)
 		self._rotate=rotate
 
 	def get_R(self):
@@ -19,7 +17,7 @@ class Bend(baseclass):
 				order=self._order
 				)
 		if self._rotate == 90:
-				R = np.zeros([6,6])
+				R = _np.zeros([6,6])
 				R[0:2,0:2] = temp[2:4,2:4]
 				R[2:4,0:2] = temp[0:2,2:4]
 				R[0:2,5] = temp[2:4,5]
@@ -53,13 +51,13 @@ def bendmat(
 
 	h     = angle/length            # /* coordinate system curvature */
 	ha    = h*(1+fse)               # /* actual curvature due to bending field */
-	n     = -K1/np.square(h)              # /* field index */
+	n     = -K1/_np.square(h)              # /* field index */
 	beta  = K2/2/pow(h,3)            # /* sextupole index */
 	gamma = 0
 
 	t0=length
 	nh = n*h
-	betah2 = beta*np.square(h)
+	betah2 = beta*_np.square(h)
 	gammah3 = gamma*pow(h,3)
 	
 	# M = sbend_matrix(length, h, ha, n*h, beta*sqr(h), gamma*pow3(h), order)
@@ -73,37 +71,37 @@ def bendmat(
 
 	small3 = pow(1e-16, 1./3.)
 
-	if (np.sqrt(abs(kx2))*t0<small3):
-		kx2 = np.square(small3/t0)
+	if (_np.sqrt(abs(kx2))*t0<small3):
+		kx2 = _np.square(small3/t0)
 		if (kx2):
-			kx2 = np.sign(kx2)*kx2
+			kx2 = _np.sign(kx2)*kx2
 
 
 	if (kx2>0.0):
-			kx = np.sqrt(kx2)
-			cx = np.cos(kx*t0)
-			sx = np.sin(kx*t0)/kx
+			kx = _np.sqrt(kx2)
+			cx = _np.cos(kx*t0)
+			sx = _np.sin(kx*t0)/kx
 	elif (kx2<0.0):
-			kx = np.sqrt(-kx2)
-			cx = np.cosh(kx*t0)
-			sx = np.sinh(kx*t0)/kx
+			kx = _np.sqrt(-kx2)
+			cx = _np.cosh(kx*t0)
+			sx = _np.sinh(kx*t0)/kx
 
 
 	if (abs(ky2)<small3):
-		ky2 = np.square(small3/t0)
+		ky2 = _np.square(small3/t0)
 		if (ky2):
-			ky2 = np.sign(ky2)*ky2
+			ky2 = _np.sign(ky2)*ky2
 
 	if (ky2>0.0):
-			ky = np.sqrt(ky2)
-			cy = np.cos(ky*t0)
-			sy = np.sin(ky*t0)/ky
+			ky = _np.sqrt(ky2)
+			cy = _np.cos(ky*t0)
+			sy = _np.sin(ky*t0)/ky
 	elif (ky2<0.0):
-			ky = np.sqrt(-ky2)
-			cy = np.cosh(ky*t0)
-			sy = np.sinh(ky*t0)/ky
+			ky = _np.sqrt(-ky2)
+			cy = _np.cosh(ky*t0)
+			sy = _np.sinh(ky*t0)/ky
 
-	R = np.identity(6)
+	R = _np.identity(6)
 	if (h!=0):
 		R[0][0] = R[1][1] = cx;
 		R[0][1] = sx;
