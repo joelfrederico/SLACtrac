@@ -5,7 +5,7 @@ from baseclass import baseclass
 class Drift(baseclass):
 	def __init__(self,length=0,order=1):
 		self._type = 'drift'
-		self._length = float(length)
+		self._length = np.float64(length)
 		self._order = int(order)
 
 	# Define transfer matrix property R
@@ -15,6 +15,14 @@ class Drift(baseclass):
 
 	def change_E(self,old_gamma,new_gamma):
 		pass
+
+	def get_length(self):
+		return self._length
+
+	def set_length(self,value):
+		self._length = np.float64(value)
+
+	length = property(fget=get_length,fset=set_length)
 
 def driftmat(l=0,order=1):
 	R_small = np.array(
