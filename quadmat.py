@@ -45,4 +45,8 @@ def quadmat(K1=0,L=0,order=1):
 			R[0:2,0:2] = R_d
 			R[2:4,2:4] = R_f
 			R[4:6,4:6] = _np.identity(2)
+		else:
+			print 'Uhm who said what now??'
+			print K1
+
 	return R
