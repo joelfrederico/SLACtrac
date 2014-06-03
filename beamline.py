@@ -11,6 +11,7 @@ class Beamline(baseclass):
 		self._gamma   = _np.float64(gamma)
 		# print len(element_list)
 		self.twiss_x = twiss_x
+		self.twiss_y = twiss_y
 		self.elements = _np.array([])
 
 		for element in element_list:
@@ -51,6 +52,12 @@ class Beamline(baseclass):
 	def _get_twiss_x_end(self):
 		return self.twiss_x.transport(self.R[0:2,0:2])
 	twiss_x_end = property(_get_twiss_x_end)
+	def _get_twiss_y_end(self):
+		return self.twiss_y.transport(self.R[0:2,0:2])
+	twiss_y_end = property(_get_twiss_y_end)
 
-	def spotsize_x_end(self,emit):
-		return self.twiss_x_end.spotsize(emit)
+	def spotsize_x_end(self,emit=None,emit_n=None):
+		return self.twiss_x_end.spotsize(emit=emit,emit_n=emit_n,gamma=self.gamma)
+
+	def spotsize_y_end(self,emit=None,emit_n=None):
+		return self.twiss_y_end.spotsize(emit=emit,emit_n=emit_n,gamma=self.gamma)

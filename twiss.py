@@ -1,9 +1,12 @@
 import numpy as _np
 
 class Twiss(object):
+	def __repr__(self):
+		return '<{} at {}; beta={}, alpha={}>'.format(self.__class__.__module__,hex(id(self)),self.beta,self.alpha)
+
 	def __init__(self,beta,alpha):
-		self.beta=beta
-		self.alpha=alpha
+		self.beta=_np.float64(beta)
+		self.alpha=_np.float64(alpha)
 
 	# Definte beta property
 	# Validate beta > 0
@@ -37,5 +40,12 @@ class Twiss(object):
 
 	# Define spotsize method
 	# Returns spot size given an emittance
-	def spotsize(self,emit):
+	def spotsize(self,emit=None,emit_n=None,gamma=None):
+		# if emit==None and emit_n==None:
+		# 	raise ValueError('Did not specify an emittance!')
+		# if emit!=None and emit_n!=None:
+		# 	raise ValueError('Specified too many emittance values!')
+		# if emit_n!=None:
+		# 	# print emit_n
+		# 	emit = emit_n/gamma
 		return _np.sqrt(self.beta*emit)
