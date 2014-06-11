@@ -18,6 +18,14 @@ class Twiss(object):
 		return self._beta
 	beta = property(_get_beta,_set_beta)
 	
+	def _get_betastar(self):
+		return 1/self.gamma
+	betastar=property(_get_betastar)
+
+	def _get_sstar(self):
+		return self.alpha/self.gamma
+	sstar=property(_get_sstar)
+
 	# Define gamma property
 	# Derived from beta and alpha
 	def _get_gamma(self):
@@ -41,11 +49,19 @@ class Twiss(object):
 	# Define spotsize method
 	# Returns spot size given an emittance
 	def spotsize(self,emit=None,emit_n=None,gamma=None):
-		# if emit==None and emit_n==None:
-		# 	raise ValueError('Did not specify an emittance!')
-		# if emit!=None and emit_n!=None:
-		# 	raise ValueError('Specified too many emittance values!')
-		# if emit_n!=None:
-		# 	# print emit_n
-		# 	emit = emit_n/gamma
-		return _np.sqrt(self.beta*emit)
+		return _np.sqrt(self.beta*self._get_geom_emit(emit=emit,emit_n=emit_n,gamma=gamma))
+
+	def _get_geom_emit(self,emit=None,emit_n=None,gamma=None):
+		if emit==None and emit_n==None:
+			raise ValueError('Did not specify an emittance!')
+		if emit!=None and emit_n!=None:
+			raise ValueError('Specified too many emittance values!')
+		if emit_n!=None:
+			# print emit_n
+			emit = _np.float64(emit_n)/np.float64(gamma)
+		else:
+			emit = _np.float64(emit)
+		return emit
+
+	def minspotsize(self,emit=None,emit_n=None,gamma=None):
+		return _np.sqrt(self.betastar*self._get_geom_emit(emit=emit,emit_n=emit_n,gamma=gamma))
