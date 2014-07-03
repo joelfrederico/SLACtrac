@@ -2,7 +2,7 @@
 import numpy as _np
 from baseclass import baseclass
 import copy as _copy
-from twiss import Twiss as _Twiss
+from Twiss import Twiss as _Twiss
 
 class Beamline(baseclass):
 	_type    = 'beamline'
@@ -53,11 +53,13 @@ class Beamline(baseclass):
 		return self.twiss_x.transport(self.R[0:2,0:2])
 	twiss_x_end = property(_get_twiss_x_end)
 	def _get_twiss_y_end(self):
-		return self.twiss_y.transport(self.R[0:2,0:2])
+		return self.twiss_y.transport(self.R[2:4,2:4])
 	twiss_y_end = property(_get_twiss_y_end)
 
 	def spotsize_x_end(self,emit=None,emit_n=None):
 		return self.twiss_x_end.spotsize(emit=emit,emit_n=emit_n,gamma=self.gamma)
 
-	def spotsize_y_end(self,emit=None,emit_n=None):
-		return self.twiss_y_end.spotsize(emit=emit,emit_n=emit_n,gamma=self.gamma)
+	def spotsize_y_end(self,emit=None,emit_n=None,gamma=None):
+		if gamma==None:
+			gamma=self.gamma
+		return self.twiss_y_end.spotsize(emit=emit,emit_n=emit_n,gamma=gamma)

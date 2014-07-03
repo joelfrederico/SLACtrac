@@ -15,6 +15,8 @@ class Quad(baseclass):
 	R = property(getR,doc='The transfer matrix R for the quad.')
 
 	def change_E(self,old_gamma,new_gamma):
+		old_gamma = _np.float64(old_gamma)
+		new_gamma = _np.float64(new_gamma)
 		self.K1 *= old_gamma / new_gamma
 
 def quadmat(K1=0,L=0,order=1):

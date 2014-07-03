@@ -17,24 +17,29 @@ class Bend(baseclass):
 				order=self._order
 				)
 		if self._rotate == 90:
-				R = _np.zeros([6,6])
-				R[0:2,0:2] = temp[2:4,2:4]
-				R[2:4,0:2] = temp[0:2,2:4]
-				R[0:2,5] = temp[2:4,5]
-				R[0:2,2:4] = temp[2:4,0:2]
-				R[2:4,2:4] = temp[0:2,0:2]
-				R[2:4,5] = temp[0:2,5]
-				R[4:6,0:2] = temp[4:6,2:4]
-				R[4:6,2:4] = temp[4:6,0:2]
-				R[4:6,4:6] = temp[4:6,4:6]
-				# print 'hi'
+			R = _np.zeros([6,6])
+			R[0:2,0:2] = temp[2:4,2:4]
+			R[2:4,0:2] = temp[0:2,2:4]
+			R[0:2,5] = temp[2:4,5]
+			R[0:2,2:4] = temp[2:4,0:2]
+			R[2:4,2:4] = temp[0:2,0:2]
+			R[2:4,5] = temp[0:2,5]
+			R[4:6,0:2] = temp[4:6,2:4]
+			R[4:6,2:4] = temp[4:6,0:2]
+			R[4:6,4:6] = temp[4:6,4:6]
+			# print 'hi'
+		elif self._rotate == 0:
+			R = temp
 		else:
-				R = temp
-				# print 'hi'
+			print 'SERIOUS PROBLEM'
+			R = temp
+			# print 'hi'
 		return R
 	R = property(get_R)
 
 	def change_E(self,old_gamma,new_gamma):
+		old_gamma = _np.float64(old_gamma)
+		new_gamma = _np.float64(new_gamma)
 		self._angle *= old_gamma / new_gamma
 
 def bendmat(

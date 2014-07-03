@@ -58,7 +58,7 @@ class Twiss(object):
 			raise ValueError('Specified too many emittance values!')
 		if emit_n!=None:
 			# print emit_n
-			emit = _np.float64(emit_n)/np.float64(gamma)
+			emit = _np.float64(emit_n)/_np.float64(gamma)
 		else:
 			emit = _np.float64(emit)
 		return emit
