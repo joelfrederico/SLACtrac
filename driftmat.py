@@ -8,18 +8,18 @@ class Drift(baseclass):
 		self._order = int(order)
 
 	# Define transfer matrix property R
-	def get_R(self):
+	def _get_R(self):
 		return driftmat(self._length,self._order)
-	R = property(get_R)
+	R = property(_get_R)
 
 	def change_E(self,old_gamma,new_gamma):
 		pass
 
-	def get_length(self):
+	def _get_length(self):
 		return self._length
-	def set_length(self,value):
+	def _set_length(self,value):
 		self._length = _np.float64(value)
-	length = property(fget=get_length,fset=set_length)
+	length = property(fget=_get_length,fset=_set_length)
 
 def driftmat(l=0,order=1):
 	R_small = _np.array(
