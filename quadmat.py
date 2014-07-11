@@ -14,6 +14,10 @@ class Quad(baseclass):
 		return quadmat(L=self._length,K1=self.K1,order=self._order)
 	R = property(getR,doc='The transfer matrix R for the quad.')
 
+	def get_length(self):
+		return self._length
+	length = property(get_length)
+
 	def change_E(self,old_gamma,new_gamma):
 		old_gamma = _np.float64(old_gamma)
 		new_gamma = _np.float64(new_gamma)

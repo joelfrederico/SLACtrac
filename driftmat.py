@@ -17,10 +17,8 @@ class Drift(baseclass):
 
 	def get_length(self):
 		return self._length
-
 	def set_length(self,value):
 		self._length = _np.float64(value)
-
 	length = property(fget=get_length,fset=set_length)
 
 def driftmat(l=0,order=1):
