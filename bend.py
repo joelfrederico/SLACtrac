@@ -8,15 +8,21 @@ class Bend(baseclass):
 		self._length = _np.float64(length)
 		self._order = int(order)
 		self._angle = _np.float64(angle)
-		self._rotate=rotate
+		self.rotate=rotate
 
-	def get_R(self):
+	def _get_rotate(self):
+		return self._rotate
+	def _set_rotate(self,val):
+		self._rotate=val
+	rotate = property(_get_rotate,_set_rotate)
+
+	def _get_R(self):
 		temp = bendmat(
 				length=self._length,
 				angle=self._angle,
 				order=self._order
 				)
-		if self._rotate == 90:
+		if self.rotate == 90:
 			R = _np.zeros([6,6])
 			R[0:2,0:2] = temp[2:4,2:4]
 			R[2:4,0:2] = temp[0:2,2:4]
@@ -28,26 +34,26 @@ class Bend(baseclass):
 			R[4:6,2:4] = temp[4:6,0:2]
 			R[4:6,4:6] = temp[4:6,4:6]
 			# print 'hi'
-		elif self._rotate == 0:
+		elif self.rotate == 0:
 			R = temp
 		else:
 			print 'SERIOUS PROBLEM'
 			R = temp
 			# print 'hi'
 		return R
-	R = property(get_R)
+	R = property(_get_R)
 
-	def get_length(self):
+	def _get_length(self):
 		return self._length
-	length = property(get_length)
+	length = property(_get_length)
 
-	def get_angle(self):
+	def _get_angle(self):
 		return self._angle
-	angle = property(get_angle)
+	angle = property(_get_angle)
 
-	def get_tilt(self):
-		return self._rotate*_np.pi/180
-	tilt = property(get_tilt)
+	def _get_tilt(self):
+		return self.rotate*_np.pi/180
+	tilt = property(_get_tilt)
 
 	def change_E(self,old_gamma,new_gamma):
 		old_gamma = _np.float64(old_gamma)
