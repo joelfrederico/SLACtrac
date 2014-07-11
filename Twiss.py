@@ -1,10 +1,12 @@
 import numpy as _np
+import warnings
 
 class Twiss(object):
 	def __repr__(self):
 		return '<{} at {}; beta={}, alpha={}>'.format(self.__class__.__module__,hex(id(self)),self.beta,self.alpha)
 
 	def __init__(self,beta,alpha):
+		warnings.warn('Twiss is deprecated, use BeamParams instead',DeprecationWarning)
 		self.beta=_np.float64(beta)
 		self.alpha=_np.float64(alpha)
 

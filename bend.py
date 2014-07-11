@@ -37,6 +37,18 @@ class Bend(baseclass):
 		return R
 	R = property(get_R)
 
+	def get_length(self):
+		return self._length
+	length = property(get_length)
+
+	def get_angle(self):
+		return self._angle
+	angle = property(get_angle)
+
+	def get_tilt(self):
+		return self._rotate*_np.pi/180
+	tilt = property(get_tilt)
+
 	def change_E(self,old_gamma,new_gamma):
 		old_gamma = _np.float64(old_gamma)
 		new_gamma = _np.float64(new_gamma)
