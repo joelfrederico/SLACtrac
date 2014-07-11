@@ -16,13 +16,13 @@ class Quad(baseclass):
 		self._K1 = val
 	K1 = property(_get_K1,_set_K1)
 
-	def getR(self):
+	def _getR(self):
 		return quadmat(L=self._length,K1=self.K1,order=self._order)
-	R = property(getR,doc='The transfer matrix R for the quad.')
+	R = property(_getR,doc='The transfer matrix R for the quad.')
 
-	def get_length(self):
+	def _get_length(self):
 		return self._length
-	length = property(get_length)
+	length = property(_get_length)
 
 	def change_E(self,old_gamma,new_gamma):
 		old_gamma = _np.float64(old_gamma)
