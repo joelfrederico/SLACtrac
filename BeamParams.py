@@ -54,12 +54,12 @@ class BeamParams(object):
 
 	# Definte beta property
 	# Validate beta > 0
+	def _get_beta(self):
+		return self._beta
 	def _set_beta(self,value):
 		if not (value > 0):
 			raise ValueError('Beta must be greater than zero: requested beta={}.'.format(value))
 		self._beta=value
-	def _get_beta(self):
-		return self._beta
 	beta = property(_get_beta,_set_beta)
 	
 	def _get_betastar(self):
