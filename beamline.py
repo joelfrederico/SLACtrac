@@ -3,6 +3,8 @@ import numpy as _np
 from baseclass import baseclass
 import copy as _copy
 # from Twiss import Twiss as _Twiss
+from BeamParams import BeamParams as _BeamParams
+from conversions import gamma2GeV as _gamma2GeV
 
 class Beamline(baseclass):
 	_type    = 'beamline'
@@ -12,8 +14,8 @@ class Beamline(baseclass):
 		# print len(element_list)
 		# self.twiss_x = twiss_x
 		# self.twiss_y = twiss_y
-		self.beam_x = beam_x
-		self.beam_y = beam_y
+		self.beam_x = _copy.deepcopy(beam_x)
+		self.beam_y = _copy.deepcopy(beam_y)
 		self.elements = _np.array([])
 
 		for element in element_list:
@@ -51,11 +53,38 @@ class Beamline(baseclass):
 		self._gamma = gamma
 	gamma = property(_get_gamma,_set_gamma)
 
+	def _get_beam_end(self,beam,slice_var):
+		beamtemp = _copy.deepcopy(beam)
+		R = _np.identity(6)
+		print '========================================'
+		for i,element in enumerate(self.elements):
+			if element._type == 'scatter':
+				beamtemp = beamtemp.transport(R[slice_var,slice_var])
+				old_emit_n = beamtemp.emit*self.gamma
+				theta_rms = element.theta_rms(_gamma2GeV(self.gamma))
+				newdiv = _np.sqrt(beamtemp.divergence**2 + theta_rms**2)
+				print 'Old divergence:\t\t{}\nAdded Divergence:\t{}\nNew Divergence:\t\t{}'.format(beamtemp.divergence,theta_rms,newdiv)
+				beamtemp = _BeamParams(spotsize=beamtemp.spotsize,divergence=newdiv,avg_xxp=beamtemp.avg_xxp)
+				new_emit_n = beamtemp.emit*self.gamma
+				print 'Old emittance:\t\t{}\nNew emittance:\t\t{}'.format(old_emit_n,new_emit_n)
+				print '-------------'
+				R = _np.identity(6)
+			else:
+				R = _np.dot(element.R,R)
+
+		out = beamtemp.transport(R[slice_var,slice_var])
+		return out
+
 	def _get_beam_x_end(self):
-		return self.beam_x.transport(self.R[0:2,0:2])
+		slice_var = slice(0,2)
+		out = self._get_beam_end(self.beam_x,slice_var)
+		return out
 	beam_x_end = property(_get_beam_x_end)
+
 	def _get_beam_y_end(self):
-		return self.beam_y.transport(self.R[2:4,2:4])
+		slice_var = slice(2,4)
+		out = self._get_beam_end(self.beam_y,slice_var)
+		return out
 	beam_y_end = property(_get_beam_y_end)
 
 	def _get_spotsize_x_end(self,emit=None,emit_n=None):

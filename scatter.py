@@ -11,11 +11,11 @@ class Scatter(baseclass):
 		self._x  = thickness
 		self._X0 = radlength
 
-	def _get_theta_rms(self,energy_GeV):
+	def theta_rms(self,energy_GeV):
 		x_div_X0 = self._x/self._X0
-		theta = 13.6e-3/energy_GeV * _np.sqrt(x_div_X0) * (1+0.038*np.log(x_div_X0))
+		theta = 13.6e-3/energy_GeV * _np.sqrt(x_div_X0) * (1+0.038*_np.log(x_div_X0))
 		return theta
-	theta_rms = property(_get_theta_rms)
+	# theta_rms = property(_get_theta_rms)
 
 	def _get_R(self):
 		warnings.warn('This scatter element does not have an R matrix: returning identity instead',UserWarning)

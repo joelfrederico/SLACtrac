@@ -6,28 +6,28 @@ class BeamParams(object):
 
 	def __init__(self,
 			beta=None,alpha=None,emit=None,emit_n=None,gamma=None,
-			spotsize=None,divergence=None,r=None,correlation=None):
+			spotsize=None,divergence=None,r=None,avg_xxp=None):
 		# If not enough info for Twiss
 		emit_norm_insufficient = (emit_n==None or gamma==None)
 		emit_geom_insufficient = emit==None
 		emit_insufficient = (emit_geom_insufficient and emit_norm_insufficient)
 		shape_insufficient = (beta==None or alpha==None)
 		twiss_insufficient = (shape_insufficient or emit_insufficient)
-		moments_insufficient = (spotsize==None or divergence==None or (r==None and correlation==None))
+		moments_insufficient = (spotsize==None or divergence==None or (r==None and avg_xxp==None))
 
 		# Validation that there's enough info to construct everything
 		if twiss_insufficient and moments_insufficient:
 			raise ValueError('Not enough information to construct Twiss values')
 
 		if twiss_insufficient:
-			if correlation!=None:
-				emit = _np.sqrt(spotsize**2 * divergence**2 - correlation**2)
-				corr_sign = _np.sign(correlation)
+			if avg_xxp!=None:
+				emit = _np.sqrt(spotsize**2 * divergence**2 - avg_xxp**2)
+				corr_sign = _np.sign(avg_xxp)
 			elif r!=None:
 				emit = spotsize * divergence * _np.sqrt(1-r**2)
 				corr_sign = _np.sign(r)
 			else:
-				raise ValueError('Missing correlation/r term')
+				raise ValueError('Missing avg_xxp/r term')
 			beta = spotsize**2/emit
 			gamma = divergence**2/emit
 			alpha = -corr_sign * _np.sqrt(gamma*beta-1)
@@ -99,6 +99,9 @@ class BeamParams(object):
 		return _np.sqrt(self.gamma*self.emit)
 	divergence=property(_get_divergence)
 
+	def _get_avg_xxp(self):
+		 return -self.alpha*self.emit
+	avg_xxp = property(_get_avg_xxp)
 
 	def minspotsize(self):
 		return _np.sqrt(self.betastar*self.emit)
