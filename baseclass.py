@@ -1,7 +1,9 @@
 class baseclass(object):
-	def __init__(self,length=0,order=1):
+	def __init__(self,length=0,order=1,name=None):
+		self.name    = name
 		self._length = length
-		self._order = order
+		self._order  = order
+		self._type   = None
 
 	def _not_allowed(self,*args,**kwargs):
 		raise AttributeError('This attribute is not available for element type: {}'.format(self._type))

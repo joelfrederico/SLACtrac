@@ -4,11 +4,12 @@ from driftmat import driftmat
 from baseclass import baseclass
 
 class Quad(baseclass):
-	def __init__(self,length=0,K1=0,order=1):
-		self._order = int(order)
-		self._type = 'quad'
+	def __init__(self,length=0,K1=0,order=1,name=None):
+		self.name   = name
+		self._order  = int(order)
+		self._type   = 'quad'
 		self._length = _np.float64(length)
-		self.K1 = _np.float64(K1)
+		self.K1      = _np.float64(K1)
 
 	def _get_K1(self):
 		return self._K1

@@ -5,25 +5,36 @@ import copy as _copy
 # from Twiss import Twiss as _Twiss
 from BeamParams import BeamParams as _BeamParams
 from conversions import gamma2GeV as _gamma2GeV
+import warnings
+
+class Elements(object):
+	def __init__(self,element_list,verbose=None):
+		self._elements
+
+
 
 class Beamline(baseclass):
 	_type    = 'beamline'
 	_order   = int(1)
-	def __init__(self,element_list,gamma,beam_x=None,beam_y=None):
+	def __init__(self,element_list,gamma,beam_x=None,beam_y=None,verbose=False):
+		self.verbose = verbose
 		self._gamma   = _np.float64(gamma)
-		# print len(element_list)
-		# self.twiss_x = twiss_x
-		# self.twiss_y = twiss_y
-		self.beam_x = _copy.deepcopy(beam_x)
-		self.beam_y = _copy.deepcopy(beam_y)
+		self.beam_x   = _copy.deepcopy(beam_x)
+		self.beam_y   = _copy.deepcopy(beam_y)
 		self.elements = _np.array([])
 
 		for element in element_list:
 			self.elements = _np.append(self.elements,_copy.deepcopy(element))
-		for element in self.elements:
+		for i,element in enumerate(self.elements):
 			# element._gamma = self._gamma
 			if ( element._order > self._order ):
 				self._order = element._order
+			if element.name == None:
+				warnings.warn('Missing name for {}-th element of beamline element list'.format(i),SyntaxWarning,stacklevel=2)
+
+	def change_verbose(self,verbose=False):
+		for i,element in enumerate(self.elements):
+			self.elements[i].verbose=verbose
 
 	# Define property length
 	def _get_length(self):
@@ -56,19 +67,22 @@ class Beamline(baseclass):
 	def _get_beam_end(self,beam,slice_var):
 		beamtemp = _copy.deepcopy(beam)
 		R = _np.identity(6)
-		print '========================================'
 		for i,element in enumerate(self.elements):
 			if element._type == 'scatter':
-				beamtemp = beamtemp.transport(R[slice_var,slice_var])
-				old_emit_n = beamtemp.emit*self.gamma
-				theta_rms = element.theta_rms(_gamma2GeV(self.gamma))
-				newdiv = _np.sqrt(beamtemp.divergence**2 + theta_rms**2)
-				print 'Old divergence:\t\t{}\nAdded Divergence:\t{}\nNew Divergence:\t\t{}'.format(beamtemp.divergence,theta_rms,newdiv)
-				beamtemp = _BeamParams(spotsize=beamtemp.spotsize,divergence=newdiv,avg_xxp=beamtemp.avg_xxp)
-				new_emit_n = beamtemp.emit*self.gamma
-				print 'Old emittance:\t\t{}\nNew emittance:\t\t{}'.format(old_emit_n,new_emit_n)
-				print '-------------'
-				R = _np.identity(6)
+				if self.verbose & element.verbose:
+					beamtemp   = beamtemp.transport(R[slice_var,slice_var])
+					old_emit_n = beamtemp.emit*self.gamma
+					theta_rms  = element.theta_rms(_gamma2GeV(self.gamma))
+					newdiv     = _np.sqrt(beamtemp.divergence**2 + theta_rms**2)
+					print '\t------------------------------------------------'
+					print '\tScatter element'
+					print '\tElement name: {}'.format(element.name)
+					print '\tDivergence:\n\t\tOld divergence:\t\t{:.3e}\n\t\tAdded Divergence:\t{:.3e}\n\t\tNew Divergence:\t\t{:.3e}\n\t\tFraction change:\t{:.3e}'.format(beamtemp.divergence,theta_rms,newdiv,newdiv/beamtemp.divergence-1)
+					beamtemp   = _BeamParams(spotsize=beamtemp.spotsize,divergence=newdiv,avg_xxp=beamtemp.avg_xxp)
+					new_emit_n = beamtemp.emit*self.gamma
+					print '\tEmittance:\n\t\tOld emittance:\t\t{}\n\t\tNew emittance:\t\t{}\n\t\tFraction change:\t{:.3e}'.format(old_emit_n,new_emit_n,new_emit_n/old_emit_n-1)
+					print '\t------------------------------------------------'
+					R = _np.identity(6)
 			else:
 				R = _np.dot(element.R,R)
 
@@ -92,7 +106,20 @@ class Beamline(baseclass):
 	spotsize_x_end = property(_get_spotsize_x_end)
 
 	def _get_spotsize_y_end(self):
-		return self.beam_y_end.spotsize
+		if self.verbose:
+			print '================================================'
+			print 'Verbose Beamline Printing in _get_spotsize_y_end...'
+			print '================================================'
+			print 'Starting norm. emittance: {}'.format(self.beam_y.emit*self.gamma)
+			print 'Starting spot in y: {}'.format(self.beam_y.spotsize)
+			print 'Starting emittance: {}'.format(self.beam_y.emit)
+			print 'Starting beta: {}'.format(self.beam_y.beta)
+		out = self.beam_y_end.spotsize
+		if self.verbose:
+			print '\t------------------------------------------------'
+			print '\tFinal spot size: {:.3f} mm'.format(out*1e3)
+			print '\t------------------------------------------------'
+		return out
 	spotsize_y_end = property(_get_spotsize_y_end)
 
 	def writelattice(self,filename='out.lte'):

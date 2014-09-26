@@ -3,12 +3,13 @@ from driftmat import driftmat
 from baseclass import baseclass
 
 class Bend(baseclass):
-	def __init__(self,length=0,angle=0,order=1,rotate=0):
-		self._type = 'bend'
+	def __init__(self,length=0,angle=0,order=1,rotate=0,name=None):
+		self.name   = name
+		self._type   = 'bend'
 		self._length = _np.float64(length)
-		self._order = int(order)
-		self._angle = _np.float64(angle)
-		self.rotate=rotate
+		self._order  = int(order)
+		self._angle  = _np.float64(angle)
+		self.rotate  = rotate
 
 	def _get_rotate(self):
 		return self._rotate
@@ -23,13 +24,13 @@ class Bend(baseclass):
 				order=self._order
 				)
 		if self.rotate == 90:
-			R = _np.zeros([6,6])
+			R          = _np.zeros([6,6])
 			R[0:2,0:2] = temp[2:4,2:4]
 			R[2:4,0:2] = temp[0:2,2:4]
-			R[0:2,5] = temp[2:4,5]
+			R[0:2,5]   = temp[2:4,5]
 			R[0:2,2:4] = temp[2:4,0:2]
 			R[2:4,2:4] = temp[0:2,0:2]
-			R[2:4,5] = temp[0:2,5]
+			R[2:4,5]   = temp[0:2,5]
 			R[4:6,0:2] = temp[4:6,2:4]
 			R[4:6,2:4] = temp[4:6,0:2]
 			R[4:6,4:6] = temp[4:6,4:6]
@@ -71,6 +72,12 @@ def bendmat(
 
 	if (( length==0 ) or ( angle==0 )):
 		return driftmat(length,order)
+
+	# Make sure ints don't flow through
+	length = _np.float_(length)
+	angle  = _np.float_(angle)
+	K1     = _np.float_(K1)
+	K2     = _np.float_(K2)
 
 	h     = angle/length            # /* coordinate system curvature */
 	ha    = h*(1+fse)               # /* actual curvature due to bending field */

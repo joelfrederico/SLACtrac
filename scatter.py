@@ -7,9 +7,11 @@ import warnings
 class Scatter(baseclass):
 	_type = 'scatter'
 	_order = 1
-	def __init__(self,thickness=0,radlength=1):
-		self._x  = thickness
-		self._X0 = radlength
+	def __init__(self,thickness=0,radlength=1,name=None,verbose=False):
+		self.name   = name
+		self.verbose = verbose
+		self._x      = thickness
+		self._X0     = radlength
 
 	def theta_rms(self,energy_GeV):
 		x_div_X0 = self._x/self._X0
@@ -18,7 +20,7 @@ class Scatter(baseclass):
 	# theta_rms = property(_get_theta_rms)
 
 	def _get_R(self):
-		warnings.warn('This scatter element does not have an R matrix: returning identity instead',UserWarning)
+		warnings.warn('This scatter element does not have an R matrix: returning identity instead',UserWarning,stacklevel=3)
 		return _np.identity(6)
 	R = property(_get_R)
 

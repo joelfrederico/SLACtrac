@@ -52,6 +52,7 @@ class BeamParams(object):
 	def set_emit_n(self,emit_n,gamma):
 		self.emit=_np.float64(emit_n/gamma)
 
+
 	# Definte beta property
 	# Validate beta > 0
 	def _get_beta(self):
@@ -97,7 +98,11 @@ class BeamParams(object):
 
 	def _get_divergence(self):
 		return _np.sqrt(self.gamma*self.emit)
-	divergence=property(_get_divergence)
+	def _set_divergence(self,value):
+		self.emit = value**2/self.gamma
+		# print self.divergence
+		# print self.emit
+	divergence=property(_get_divergence,_set_divergence)
 
 	def _get_avg_xxp(self):
 		 return -self.alpha*self.emit
