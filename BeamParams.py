@@ -108,5 +108,6 @@ class BeamParams(object):
 		 return -self.alpha*self.emit
 	avg_xxp = property(_get_avg_xxp)
 
-	def minspotsize(self):
+	def _get_minspotsize(self):
 		return _np.sqrt(self.betastar*self.emit)
+	minspotsize = property(_get_minspotsize)
