@@ -8,4 +8,3 @@ from scatter import *
 from Twiss import *
 from BeamParams import *
 from conversions import *
-from BDES2K import *
