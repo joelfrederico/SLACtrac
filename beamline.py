@@ -1,17 +1,21 @@
 # import scipy as _sp
-import numpy as _np
-from baseclass import baseclass
-import copy as _copy
-# from Twiss import Twiss as _Twiss
 from BeamParams import BeamParams as _BeamParams
+from baseclass import baseclass
 from conversions import gamma2GeV as _gamma2GeV
+import copy as _copy
+import ipdb
+import logging
+import numpy as _np
+import slactrac as sltr
 import warnings
+
+logger=logging.getLogger(__name__)
+#  loggerlevel = logging.DEBUG
+loggerlevel = 9
 
 class Elements(object):
     def __init__(self,element_list,verbose=None):
         self._elements
-
-
 
 class Beamline(baseclass):
     _type    = 'beamline'
@@ -122,7 +126,7 @@ class Beamline(baseclass):
         return out
     spotsize_y_end = property(_get_spotsize_y_end)
 
-    def writelattice(self,filename='out.lte'):
+    def elegant_lte(self,filename='out.lte',scatter_enable=False):
         f = open(filename,'w')
         string = 'C\t:CHARGE,TOTAL=3.2E-09'
         f.write(string + '\n')
@@ -130,14 +134,15 @@ class Beamline(baseclass):
 
         # Write elements
         for i,obj in enumerate(self.elements):
+            # ipdb.set_trace()
             if obj._type == 'drift':
-                name = 'CSRD{}'.format(i)
+                name = 'CSRD{:02.0f}'.format(i)
                 names = _np.append(names,name)
                 string = '{}\t:CSRDRIF,L={},USE_STUPAKOV=1,N_KICKS=1'.format(name,obj.length)
             elif obj._type == 'bend':
-                name = 'BEND{}'.format(i)
+                name = 'BEND{:02.0f}'.format(i)
                 names = _np.append(names,name)
-                string = ('{}\t:CSRCSBEN,L={}, &\n'
+                string = ('{}\t:CSRCSBEN,L={:02.0f}, &\n'
                         '\t\tANGLE={}, &\n'
                         '\t\tTILT={}, &\n'
                         '\t\tN_KICKS=20, &\n'
@@ -146,22 +151,35 @@ class Beamline(baseclass):
                         '\t\tSTEADY_STATE=0,&\n'
                         '\t\tBINS=500').format(name,obj.length,obj.angle,obj.tilt)
             elif obj._type == 'quad':
-                name = 'QUAD{}'.format(i)
+                name = 'QUAD{:02.0f}'.format(i)
                 names = _np.append(names,name)
                 string = '{}\t:QUAD,L={},K1={}'.format(name,obj.length,obj.K1)
+            elif obj._type == 'scatter':
+                name = 'SCATTER{:02.0f}'.format(i)
+                string = ('{name}\t:SCATTER,&\n'
+                        '\t\tXP={xp}, &\n'
+                        '\t\tYP={yp}'
+                        ).format(name=name,
+                                xp=obj.theta_rms(sltr.gamma2GeV(self.gamma)),
+                                yp=obj.theta_rms(sltr.gamma2GeV(self.gamma))
+                                )
+                if scatter_enable:
+                    names = _np.append(names,name)
             else:
                 raise ValueError('Element not a drift, bend, or quad')
                 
-            f.write(string+'\n')
+            logger.log(level=loggerlevel,msg='Name is: {}'.format(name))
+            logger.log(level=loggerlevel,msg='Iteration is: {}'.format(i))
+            f.write(string+'\n\n')
 
         # Write beamline
-        string = '\nBEAMLINE\t:LINE('
+        string = '\nBEAMLINE\t:LINE=(&\n'
         for i,val in enumerate(names):
             if i == 0:
-                string = string + val
+                string = string + '\t\t\t' + val
             else:
-                string = string + ',' + val
-        string = string + ')'
+                string = string + ', &' + '\n\t\t\t' + val
+        string = string + '  &\n\t\t\t)'
 
         f.write(string)
 

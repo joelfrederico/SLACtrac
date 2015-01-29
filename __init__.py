@@ -8,3 +8,4 @@ from scatter import *
 from Twiss import *
 from BeamParams import *
 from conversions import *
+from elegant_sim import *
