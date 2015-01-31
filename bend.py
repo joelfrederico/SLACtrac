@@ -6,9 +6,9 @@ class Bend(baseclass):
     def __init__(self,length=0,angle=0,order=1,rotate=0,name=None):
         self.name   = name
         self._type   = 'bend'
-        self._length = _np.float64(length)
+        self._length = _np.float_(length)
         self._order  = int(order)
-        self._angle  = _np.float64(angle)
+        self._angle  = _np.float_(angle)
         self.rotate  = rotate
 
     def _get_rotate(self):
@@ -57,8 +57,8 @@ class Bend(baseclass):
     tilt = property(_get_tilt)
 
     def change_E(self,old_gamma,new_gamma):
-        old_gamma = _np.float64(old_gamma)
-        new_gamma = _np.float64(new_gamma)
+        old_gamma = _np.float_(old_gamma)
+        new_gamma = _np.float_(new_gamma)
         self._angle *= old_gamma / new_gamma
 
 def bendmat(
@@ -159,5 +159,4 @@ def bendmat(
     R[5][0] = R[5][1] = R[5][2] = R[5][3] = R[5][4] = 0;
     R[4][4] = R[5][5] = 1;
  
-    
     return R
