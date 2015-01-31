@@ -142,7 +142,7 @@ class Beamline(baseclass):
             elif obj._type == 'bend':
                 name = 'BEND{:02.0f}'.format(i)
                 names = _np.append(names,name)
-                string = ('{}\t:CSRCSBEN,L={:02.0f}, &\n'
+                string = ('{}\t:CSRCSBEN,L={:0.10e}, &\n'
                         '\t\tANGLE={}, &\n'
                         '\t\tTILT={}, &\n'
                         '\t\tN_KICKS=20, &\n'
