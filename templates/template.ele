@@ -1,10 +1,10 @@
 &run_setup
-	lattice                  = {{ filename | default('driewfaewfft.lte') }},
+	lattice                  = {{ filename | default('drift.lte') }},
 	use_beamline             = "BEAMLINE",
 	output                   = %s.out,
 	! centroid                 = %s.cen,
 	! sigma                    = %s.sig,
-	! final                    = %s.fin,
+	final                    = %s.fin,
 	! acceptance               = %s.acceptance,
 	! losses                   = %s.lost,
 	! magnets                  = %s.mag,
@@ -14,7 +14,7 @@
 	print_statistics         = 1,
 	random_number_seed       = 987654321,
 	! expand_for               = "NRTL_input_binary.sdds",
-	p_central                = {{ lattice_p_central | default('39824') | float }} ,
+	p_central                = {{ lattice_pCentral | default('39824') | float }} ,
 	tracking_updates         = 1,
 	load_balancing_on        = 0,
 &end
@@ -25,7 +25,7 @@
 
 &bunched_beam
 	bunch                    = {{ bunch | default('%s.bun')             }} ,
-	n_particles_per_bunch    = {{ n_particles_per_bunch    | default('1e6')    | int   }} ,
+	n_particles_per_bunch    = {{ n_particles_per_bunch    | default('1')      | int   }} ,
 	time_start               = {{ time_start               | default('0')      | int   }} ,
 	emit_nx                  = {{ beam_emit_nx             | default('100e-6') | float }} ,
 	beta_x                   = {{ beam_beta_x              | default('0.5')    | float }} ,
@@ -38,7 +38,7 @@
 	eta_y                    = {{ beam_eta_y               | default('0.0')    | float }} ,
 	etap_y                   = {{ beam_etap_y              | default('0.0')    | float }} ,
 	use_twiss_command_values = {{ use_twiss_command_values | default('0')      | float }} ,
-	Po                       = {{ beam_p_central           | default('39824')  | float }} ,
+	Po                       = {{ beam_pCentral           | default('39824')  | float }} ,
 	sigma_dp                 = {{ sigma_dp                 | default('1e-2')   | float }} ,
 	sigma_s                  = {{ sigma_s                  | default('50e-6')  | float }} ,
 	dp_s_coupling            = {{ dp_s_coupling            | default('0')      | float }} ,
