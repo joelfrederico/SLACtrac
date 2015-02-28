@@ -3,13 +3,14 @@ from driftmat import driftmat
 from baseclass import baseclass
 
 class Bend(baseclass):
-    def __init__(self,length=0,angle=0,order=1,rotate=0,name=None):
+    def __init__(self,length=0,angle=0,order=1,rotate=0,name=None,**kwargs):
         self.name   = name
         self._type   = 'bend'
         self._length = _np.float_(length)
         self._order  = int(order)
         self._angle  = _np.float_(angle)
         self.rotate  = rotate
+        self._kwargs = kwargs
 
     def _get_rotate(self):
         return self._rotate
@@ -60,6 +61,27 @@ class Bend(baseclass):
         old_gamma = _np.float_(old_gamma)
         new_gamma = _np.float_(new_gamma)
         self._angle *= old_gamma / new_gamma
+
+    @property
+    def ele_name(self):
+        name = 'BEND_{}_{:03.0f}'.format(self.name,self.ind)
+        return name
+
+    @property
+    def ele_string(self):
+        string = (
+                '{}\t:CSRCSBEN               , &\n'
+                '\t\tL            = {:0.10e} , &\n'
+                '\t\tANGLE        = {}       , &\n'
+                '\t\tTILT         = {}       , &\n'
+                '\t\tN_KICKS      = 20       , &\n'
+                '\t\tSG_HALFWIDTH = 1        , &\n'
+                '\t\tSG_ORDER     = 1        , &\n'
+                '\t\tSTEADY_STATE = 0        , &\n'
+                '\t\tBINS         = 500').format(self.ele_name,self.length,self.angle,self.tilt)
+        string = string + self._kwargs_str
+
+        return string
 
 def bendmat(
         length=0,

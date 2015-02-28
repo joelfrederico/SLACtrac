@@ -10,7 +10,7 @@
 	! magnets                  = %s.mag,
 	! parameters               = %s.par,
 	combine_bunch_statistics = 0,
-	default_order            = 2,
+	default_order            = 3,
 	print_statistics         = 1,
 	random_number_seed       = 987654321,
 	! expand_for               = "NRTL_input_binary.sdds",
@@ -21,6 +21,19 @@
 
 &run_control
 	n_steps                  = 1
+&end
+
+&matrix_output
+	printout              = %s.mpr ,
+	printout_order        = {{ printout_order    | default('3') | int }} ,
+	full_matrix_only      = {{ full_matrix_only  | default('1') | int }} ,
+	SDDS_output           = %s.mat ,
+	SDDS_output_order     = {{ SDDS_output_order | default('3') | int }} ,
+	! individual_matrices   = 0      ,
+	! SDDS_output_match     = NULL   ,
+	! output_at_each_step   = 0      ,
+	! start_from            = NULL   ,
+	! start_from_occurrence = 1
 &end
 
 &bunched_beam
@@ -87,13 +100,6 @@
 !         input="NRTL_input_binary.sdds",
 !         center_transversely=1,
 !         center_arrival_time=1
-! &end
-
-! &matrix_output
-!         printout=%s.mpr,
-!         printout_order=2,
-!         SDDS_output=%s.mat,
-!         SDDS_output_order=2,
 ! &end
 
 &track

@@ -4,12 +4,13 @@ from driftmat import driftmat
 from baseclass import baseclass
 
 class Quad(baseclass):
-    def __init__(self,length=0,K1=0,order=1,name=None):
+    def __init__(self,length=0,K1=0,order=1,name=None,**kwargs):
         self.name   = name
         self._order  = int(order)
         self._type   = 'quad'
         self._length = _np.float64(length)
         self.K1      = _np.float64(K1)
+        self._kwargs = kwargs
 
     def _get_K1(self):
         return self._K1
@@ -29,6 +30,18 @@ class Quad(baseclass):
         old_gamma = _np.float64(old_gamma)
         new_gamma = _np.float64(new_gamma)
         self.K1 *= old_gamma / new_gamma
+
+    @property
+    def ele_name(self):
+        name = 'QUAD_{}_{:03.0f}'.format(self.name,self.ind)
+        return name
+
+    @property
+    def ele_string(self):
+        string = '{}\t:KQUAD, L = {}, K1 = {}'.format(self.ele_name,self.length,self.K1)
+        string = string + self._kwargs_str
+
+        return string
 
 def quadmat(K1=0,L=0,order=1):
     if ( K1 == 0 ):

@@ -26,3 +26,23 @@ class Scatter(baseclass):
 
     def change_E(self,old_gamma,new_gamma):
         pass
+
+    @property
+    def ele_name(self):
+        name = 'SCATTER_{}_{ind:03.0f}'.format(self.name,self.ind)
+        return name
+
+    @property
+    def ele_string(self,ind,gamma):
+        string = (
+                '{name}\t:SCATTER , &\n'
+                '\t\tXP = {xp}    , &\n'
+                '\t\tYP = {yp}'
+                ).format(
+                        name = self.elename,
+                        xp   = self.theta_rms(sltr.gamma2GeV(gamma)),
+                        yp   = self.theta_rms(sltr.gamma2GeV(gamma))
+                        )
+        string = string + self._kwargs_str
+
+        return string

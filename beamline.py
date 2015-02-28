@@ -13,9 +13,9 @@ logger=logging.getLogger(__name__)
 #  loggerlevel = logging.DEBUG
 loggerlevel = 9
 
-class Elements(object):
-    def __init__(self,element_list,verbose=None):
-        self._elements
+#  class Elements(object):
+#      def __init__(self,element_list,verbose=None):
+#          self._elements
 
 class Beamline(baseclass):
     _type    = 'beamline'
@@ -35,6 +35,7 @@ class Beamline(baseclass):
                 self._order = element._order
             if element.name == None:
                 warnings.warn('Missing name for {}-th element of beamline element list'.format(i),SyntaxWarning,stacklevel=2)
+            element.ind = i
 
     def change_verbose(self,verbose=False):
         for i,element in enumerate(self.elements):
@@ -135,40 +136,50 @@ class Beamline(baseclass):
         # Write elements
         for i,obj in enumerate(self.elements):
             # ipdb.set_trace()
-            if obj._type == 'drift':
-                name = 'CSRD{:02.0f}'.format(i)
-                names = _np.append(names,name)
-                string = '{}\t:CSRDRIF,L={},USE_STUPAKOV=1,N_KICKS=1'.format(name,obj.length)
-            elif obj._type == 'bend':
-                name = 'BEND{:02.0f}'.format(i)
-                names = _np.append(names,name)
-                string = ('{}\t:CSRCSBEN,L={:0.10e}, &\n'
-                        '\t\tANGLE={}, &\n'
-                        '\t\tTILT={}, &\n'
-                        '\t\tN_KICKS=20, &\n'
-                        '\t\tSG_HALFWIDTH=1,&\n'
-                        '\t\tSG_ORDER=1,&\n'
-                        '\t\tSTEADY_STATE=0,&\n'
-                        '\t\tBINS=500').format(name,obj.length,obj.angle,obj.tilt)
-            elif obj._type == 'quad':
-                name = 'QUAD{:02.0f}'.format(i)
-                names = _np.append(names,name)
-                string = '{}\t:QUAD,L={},K1={}'.format(name,obj.length,obj.K1)
-            elif obj._type == 'scatter':
-                name = 'SCATTER{:02.0f}'.format(i)
-                string = ('{name}\t:SCATTER,&\n'
-                        '\t\tXP={xp}, &\n'
-                        '\t\tYP={yp}'
-                        ).format(name=name,
-                                xp=obj.theta_rms(sltr.gamma2GeV(self.gamma)),
-                                yp=obj.theta_rms(sltr.gamma2GeV(self.gamma))
-                                )
+            if obj._type == 'scatter':
                 if scatter_enable:
-                    names = _np.append(names,name)
+                    string = obj.ele_string(i,self.gamma)
+                    names = _np.append(names,obj.ele_name)
+                else:
+                    continue
             else:
-                raise ValueError('Element not a drift, bend, or quad')
+                string = obj.ele_string
+                names = _np.append(names,obj.ele_name)
+
+            #  if obj._type == 'drift':
+            #      name = 'CSRD{:02.0f}'.format(i)
+            #      names = _np.append(names,name)
+            #      string = '{}\t:CSRDRIF,L={},USE_STUPAKOV=1,N_KICKS=1'.format(name,obj.length)
+            #  elif obj._type == 'bend':
+            #      name = 'BEND{:02.0f}'.format(i)
+            #      names = _np.append(names,name)
+            #      string = ('{}\t:CSRCSBEN,L={:0.10e}, &\n'
+            #              '\t\tANGLE={}, &\n'
+            #              '\t\tTILT={}, &\n'
+            #              '\t\tN_KICKS=20, &\n'
+            #              '\t\tSG_HALFWIDTH=1,&\n'
+            #              '\t\tSG_ORDER=1,&\n'
+            #              '\t\tSTEADY_STATE=0,&\n'
+            #              '\t\tBINS=500').format(name,obj.length,obj.angle,obj.tilt)
+            #  elif obj._type == 'quad':
+            #      name = 'QUAD{:02.0f}'.format(i)
+            #      names = _np.append(names,name)
+            #      string = '{}\t:QUAD,L={},K1={}'.format(name,obj.length,obj.K1)
+            #  elif obj._type == 'scatter':
+            #      name = 'SCATTER{:02.0f}'.format(i)
+            #      string = ('{name}\t:SCATTER,&\n'
+            #              '\t\tXP={xp}, &\n'
+            #              '\t\tYP={yp}'
+            #              ).format(name=name,
+            #                      xp=obj.theta_rms(sltr.gamma2GeV(self.gamma)),
+            #                      yp=obj.theta_rms(sltr.gamma2GeV(self.gamma))
+            #                      )
+            #      if scatter_enable:
+            #          names = _np.append(names,name)
+            #  else:
+            #      raise ValueError('Element not a drift, bend, or quad')
                 
-            logger.log(level=loggerlevel,msg='Name is: {}'.format(name))
+            logger.log(level=loggerlevel,msg='Name is: {}'.format(obj.ele_name))
             logger.log(level=loggerlevel,msg='Iteration is: {}'.format(i))
             f.write(string+'\n\n')
 

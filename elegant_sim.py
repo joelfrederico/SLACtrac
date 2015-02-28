@@ -14,7 +14,7 @@ loggerlevel = logging.DEBUG
 
 __all__ = ['elegant_sim']
 
-def elegant_sim(beamline,dir=None,**kwargs):
+def elegant_sim(beamline,dir=None,filename=None,**kwargs):
     # ======================================
     # If path isn't specified, create
     # temporary one
@@ -28,8 +28,11 @@ def elegant_sim(beamline,dir=None,**kwargs):
     # ======================================
     # Open up a temporary file in the path
     # ======================================
-    fd,filename = tempfile.mkstemp(dir=path,prefix='out_',suffix='.ele')
-    f = os.fdopen(fd,'w+')
+    if filename is None:
+        fd,filename = tempfile.mkstemp(dir=path,prefix='out_',suffix='.ele')
+        f = os.fdopen(fd,'w+')
+    else:
+        f = open(os.path.join(path,filename),'w+')
     logger.log(level=loggerlevel,msg='Filename is: {}'.format(filename))
 
     basename = os.path.basename(filename)
@@ -58,8 +61,15 @@ def elegant_sim(beamline,dir=None,**kwargs):
     command = 'elegant {}'.format(filename)
     logger.log(level=loggerlevel,msg='Command is: {}'.format(command))
 
-    fnull = open(os.devnull,'w')
-    subprocess.call(shlex.split(command),stdout=fnull,stderr=fnull)
+    log_name = os.path.join(path,'{}.log'.format(root))
+    f_log = open(log_name,'w+')
+    logger.log(level=loggerlevel,msg='Log file is: {}'.format(log_name))
+
+    #  fnull = open(os.devnull,'w')
+    cwdu = os.getcwdu()
+    os.chdir(path)
+    subprocess.call(shlex.split(command),stdout=f_log,stderr=f_log)
+    os.chdir(cwdu)
 
     # ======================================
     # Clean temporary directory if necessary
