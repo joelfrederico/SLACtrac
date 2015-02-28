@@ -2,11 +2,12 @@ import numpy as _np
 from baseclass import baseclass
 
 class Drift(baseclass):
-    def __init__(self,length=0,order=1,name=None):
+    def __init__(self,length=0,order=1,name=None,**kwargs):
         self.name   = name
         self._type   = 'drift'
         self._length = _np.float64(length)
         self._order  = int(order)
+        self._kwargs = kwargs
 
     # Define transfer matrix property R
     def _get_R(self):
@@ -24,6 +25,19 @@ class Drift(baseclass):
         print 'Length changing for element ({}) from {} to {}'.format(self.name,self._length,value)
         self._length = _np.float64(value)
     length = property(fget=_get_length,fset=_set_length)
+
+    @property
+    def ele_name(self):
+        name = 'CSRD_{}_{:03.0f}'.format(self.name,self.ind)
+        return name
+
+    @property
+    def ele_string(self):
+        string = '{}\t:CSRDRIF,L={},USE_STUPAKOV=1,N_KICKS=1'.format(self.ele_name,self.length)
+        string = string + self._kwargs_str
+
+        return string
+
 
 def driftmat(l=0,order=1):
     R_small = _np.array(
