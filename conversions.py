@@ -12,5 +12,8 @@ def gamma2GeV(gamma):
         return gamma*electron_mc2_gev
 
 def GeV2gamma(E):
-    E = _np.float(E)
+    if _np.size(E) == 1:
+        E = _np.float(E)
+    else:
+        E = _np.array(E,dtype='float')
     return E/electron_mc2_gev
