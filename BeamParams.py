@@ -64,7 +64,7 @@ class BeamParams(object):
     beta = property(_get_beta,_set_beta)
     
     def _get_betastar(self):
-        return 1/self.gamma
+        return 1.0/self.gamma
     betastar=property(_get_betastar)
 
     def _get_sstar(self):
