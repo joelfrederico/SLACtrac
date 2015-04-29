@@ -19,3 +19,16 @@ def GeV2gamma(E):
     else:
         E = _np.array(E, dtype='float')
     return E/electron_mc2_gev
+
+
+def GeV2joule(E):
+    return eV2joule(E) * 1e9
+
+
+def eV2joule(E):
+    if _np.size(E) == 1:
+        E = _np.float(E)
+    else:
+        E = _np.array(E, dtype='float')
+
+    return - E * e
