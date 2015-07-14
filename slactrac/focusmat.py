@@ -1,37 +1,60 @@
 import os as _os
-on_rtd = _os.environ.get('READTHEDOCS', None) == 'True'
-if not on_rtd:
+_on_rtd = _os.environ.get('READTHEDOCS', None) == 'True'
+if not _on_rtd:
     import numpy as _np
 
 from .driftmat import driftmat as _driftmat
-from .baseclass import baseclass
+from .baseclass import baseclass as _baseclass
 
 __all__ = ['Focus']
 
 
-class Focus(baseclass):
+class Focus(_baseclass):
+    """
+    Represents a transversely-focusing element (e.g. ion column).
+
+    * *length*: Length of the element
+    * *K1*: Geometric focusing strength of the element
+    * *order*: Order to calculate the transfer matrix
+    * *name*: The name used to identify the element
+    """
     def __init__(self, length=0, K1=0, order=1):
         self._order = int(order)
         self._type = 'focus'
         self._length = _np.float64(length)
         self.K1 = _np.float64(K1)
 
-    def _get_K1(self):
+    @property
+    def K1(self):
+        """
+        The geometric focusing strength.
+        """
         return self._K1
 
-    def _set_K1(self, val):
+    @K1.setter
+    def K1(self, val):
         self._K1 = val
-    K1 = property(_get_K1, _set_K1)
 
-    def _getR(self):
+    @property
+    def R(self):
+        """
+        The transfer matrix R for the focus.
+        """
         return focusmat(L=self._length, K1=self.K1, order=self._order)
-    R = property(_getR, doc='The transfer matrix R for the focus.')
 
-    def _get_length(self):
+    @property
+    def length(self):
+        """
+        The length of the focus element.
+        """
         return self._length
-    length = property(_get_length)
 
     def change_E(self, old_gamma, new_gamma):
+        """
+        Scale the setpoint energy of the magnet from the old energy old_gamma to new energy new_gamma.
+
+        The best way to think about this is that the angle will change with different beam energy, so changing the beam energy changes the magnet’s properties, because the magnet’s B-field stays the same.
+        """
         old_gamma = _np.float64(old_gamma)
         new_gamma = _np.float64(new_gamma)
         self.K1 *= old_gamma / new_gamma

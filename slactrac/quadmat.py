@@ -1,9 +1,21 @@
-import numpy as _np
+import os as _os
+_on_rtd = _os.environ.get('READTHEDOCS', None) == 'True'
+if not _on_rtd:
+    import numpy as _np
+
 from .driftmat import driftmat
 from .baseclass import baseclass
 
 
 class Quad(baseclass):
+    """
+    Represents a quadrupole with:
+
+    * *length*: Length of the quad
+    * *K1*: Geometric focusing strength of the quad
+    * *order*: Order to calculate the transfer matrix
+    * *name*: The name used to identify the quad
+    """
     def __init__(self, length=0, K1=0, order=1, name=None, **kwargs):
         self.name   = name
         self._order  = int(order)
@@ -12,33 +24,54 @@ class Quad(baseclass):
         self.K1      = _np.float64(K1)
         self._kwargs = kwargs
 
-    def _get_K1(self):
+    @property
+    def K1(self):
+        """
+        The geometric focusing strength.
+        """
         return self._K1
 
-    def _set_K1(self, val):
+    @K1.setter
+    def K1(self, val):
         self._K1 = val
-    K1 = property(_get_K1, _set_K1)
 
-    def _getR(self):
+    @property
+    def R(self):
+        """
+        The transfer matrix R for the quad.
+        """
         return quadmat(L=self._length, K1=self.K1, order=self._order)
-    R = property(_getR, doc='The transfer matrix R for the quad.')
 
-    def _get_length(self):
+    @property
+    def length(self):
+        """
+        The length of the quad.
+        """
         return self._length
-    length = property(_get_length)
 
     def change_E(self, old_gamma, new_gamma):
+        """
+        Scale the setpoint energy of the magnet from the old energy old_gamma to new energy new_gamma.
+
+        The best way to think about this is that the angle will change with different beam energy, so changing the beam energy changes the magnet’s properties, because the magnet’s B-field stays the same.
+        """
         old_gamma = _np.float64(old_gamma)
         new_gamma = _np.float64(new_gamma)
         self.K1 *= old_gamma / new_gamma
 
     @property
     def ele_name(self):
+        """
+        Returns the elegant-styled name.
+        """
         name = 'QUAD_{}_{:03.0f}'.format(self.name, self.ind)
         return name
 
     @property
     def ele_string(self):
+        """
+        Returns the full elegant entry.
+        """
         string = '{}\t:KQUAD, L = {}, K1 = {}'.format(self.ele_name, self.length, self.K1)
         string = string + self._kwargs_str
 
