@@ -1,8 +1,18 @@
-import numpy as _np
-from .driftmat import driftmat
-from .baseclass import baseclass
+import os as _os
+on_rtd = _os.environ.get('READTHEDOCS', None) == 'True'
+if not on_rtd:
+    import numpy as _np
 
-class Bend(baseclass):
+from .driftmat import driftmat as _driftmat
+from .baseclass import baseclass as _baseclass
+
+__all__ = ['Bend']
+
+
+class Bend(_baseclass):
+    """
+    Represents a bend with *length*, bend *angle*, rotation *rotate*, calculated to *order*, represented by *name*
+    """
     def __init__(self, length=0, angle=0, order=1, rotate=0, name=None, **kwargs):
         self.name   = name
         self._type   = 'bend'
@@ -12,18 +22,27 @@ class Bend(baseclass):
         self.rotate  = rotate
         self._kwargs = kwargs
 
-    def _get_rotate(self):
+    @property
+    def rotate(self):
+        """
+        The orientation of the magnet.
+        """
         return self._rotate
-    def _set_rotate(self, val):
-        self._rotate=val
-    rotate = property(_get_rotate, _set_rotate)
 
-    def _get_R(self):
+    @rotate.setter
+    def rotate(self, val):
+        self._rotate = val
+
+    @property
+    def R(self):
+        """
+        The first-order transfer matrix.
+        """
         temp = bendmat(
-                length=self._length,
-                angle=self._angle,
-                order=self._order
-                )
+            length = self._length,
+            angle  = self._angle,
+            order  = self._order
+            )
         if self.rotate == 90:
             R          = _np.zeros([6, 6])
             R[0:2, 0:2] = temp[2:4, 2:4]
@@ -43,32 +62,51 @@ class Bend(baseclass):
             R = temp
             # print('hi')
         return R
-    R = property(_get_R)
 
-    def _get_length(self):
+    @property
+    def length(self):
+        """
+        The length of the magnet.
+        """
         return self._length
-    length = property(_get_length)
 
-    def _get_angle(self):
+    @property
+    def angle(self):
+        """
+        The bend angle of the magnet in degrees.
+        """
         return self._angle
-    angle = property(_get_angle)
 
-    def _get_tilt(self):
+    @property
+    def tilt(self):
+        """
+        The bend angle of the magnet in radians.
+        """
         return self.rotate*_np.pi/180
-    tilt = property(_get_tilt)
 
     def change_E(self, old_gamma, new_gamma):
+        """
+        Scale the setpoint energy of the magnet from the old energy *old_gamma* to new energy *new_gamma*.
+
+        The best way to think about this is that the angle will change with different beam energy, so changing the beam energy changes the magnet's properties, because the magnet's B-field stays the same.
+        """
         old_gamma = _np.float_(old_gamma)
         new_gamma = _np.float_(new_gamma)
         self._angle *= old_gamma / new_gamma
 
     @property
     def ele_name(self):
+        """
+        Returns the elegant-styled name.
+        """
         name = 'BEND_{}_{:03.0f}'.format(self.name, self.ind)
         return name
 
     @property
     def ele_string(self):
+        """
+        Returns the full elegant entry.
+        """
         string = (
             '{}\t:CSRCSBEN               , &\n'
             '\t\tL            = {:0.10e} , &\n'
@@ -94,7 +132,7 @@ def bendmat(
         ):
 
     if (( length == 0 ) or ( angle == 0 )):
-        return driftmat(length, order)
+        return _driftmat(length, order)
 
     # Make sure ints don't flow through
     length = _np.float_(length)
@@ -110,17 +148,17 @@ def bendmat(
 
     t0      = length
     nh      = n*h
-    betah2  = beta*_np.square(h)
-    gammah3 = gamma*pow(h, 3)
+    betah2  = beta*_np.square(h)  # noqa
+    gammah3 = gamma*pow(h, 3)  # noqa
     
     # M = sbend_matrix(length, h, ha, n*h, beta*sqr(h), gamma*pow3(h), order)
     h2 = h*h
-    ha2 = ha*ha
+    ha2 = ha*ha  # noqa
 
     kx2 = -(h2 - 2*h*ha + nh*ha)
     ky2 = nh*ha
-    ky2_is_zero = (ky2==0)
-    kx2_is_zero = (kx2==0)
+    ky2_is_zero = (ky2 == 0)  # noqa
+    kx2_is_zero = (kx2 == 0)  # noqa
 
     small3 = pow(1e-16, 1./3.)
 
@@ -174,7 +212,7 @@ def bendmat(
         # /* steering corrector */
         R[0][0] = R[1][1] = R[2][2] = R[3][3] = 1
         R[0][1] = R[2][3] = t0
-        R[0][5] = C[0] + t0*_np.sin(ha*t0)
+        R[0][5] = C[0] + t0*_np.sin(ha*t0)  # noqa
         R[1][5] = t0*ha*_np.cos(ha*t0)
 
     R[5][0] = R[5][1] = R[5][2] = R[5][3] = R[5][4] = 0

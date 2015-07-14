@@ -1,6 +1,12 @@
-import numpy as _np
-from .driftmat import driftmat
+import os as _os
+on_rtd = _os.environ.get('READTHEDOCS', None) == 'True'
+if not on_rtd:
+    import numpy as _np
+
+from .driftmat import driftmat as _driftmat
 from .baseclass import baseclass
+
+__all__ = ['Focus']
 
 
 class Focus(baseclass):
@@ -33,14 +39,14 @@ class Focus(baseclass):
 
 def focusmat(K1=0, L=0, order=1):
     if ( K1 == 0 ):
-        R = driftmat(L, order)
+        R = _driftmat(L, order)
     else:
         rtK = _np.sqrt(_np.abs(K1))
         rtK_L = rtK * L
         sin_rtK_L = _np.sin(rtK_L)
         cos_rtK_L = _np.cos(rtK_L)
-        sinh_rtK_L = _np.sinh(rtK_L)
-        cosh_rtK_L = _np.cosh(rtK_L)
+        sinh_rtK_L = _np.sinh(rtK_L)  # noqa
+        cosh_rtK_L = _np.cosh(rtK_L)  # noqa
         R_f = _np.array(
             [[ cos_rtK_L    , sin_rtK_L/rtK ],
             [  -rtK*sin_rtK_L , cos_rtK_L   ]]

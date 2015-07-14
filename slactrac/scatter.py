@@ -1,12 +1,22 @@
-import numpy as _np
-from .baseclass import baseclass
-# import copy as _copy
-# from .Twiss import Twiss as _Twiss
-import warnings
+import os as _os
+on_rtd = _os.environ.get('READTHEDOCS', None) == 'True'
+if not on_rtd:
+    import numpy as _np
+
+from .baseclass import baseclass as _baseclass
+import warnings as _warnings
 from .conversions import *
 
 
-class Scatter(baseclass):
+class Scatter(_baseclass):
+    """
+    Represents a foil element with:
+
+    * *thickness*: The thickness of the foil in SI units
+    * *radlength*: The radiation lenght of the foil
+    * *name*: The name used to identify the foil
+    * *verbose*: Whether or not to print information to the terminal
+    """
     _type = 'scatter'
     _order = 1
 
@@ -17,26 +27,41 @@ class Scatter(baseclass):
         self._X0     = radlength
 
     def theta_rms(self, energy_GeV):
+        """
+        The RMS scattering angle in radians.
+        """
         x_div_X0 = self._x/self._X0
         theta = 13.6e-3/energy_GeV * _np.sqrt(x_div_X0) * (1+0.038*_np.log(x_div_X0))
         return theta
     # theta_rms = property(_get_theta_rms)
 
-    def _get_R(self):
-        warnings.warn('This scatter element does not have an R matrix: returning identity instead', UserWarning, stacklevel=3)
+    @property
+    def R(self):
+        """
+        This is necessary for the simulation, but a scattering element does not have an R matrix, and this is the identity.
+        """
+        _warnings.warn('This scatter element does not have an R matrix: returning identity instead', UserWarning, stacklevel=3)
         return _np.identity(6)
-    R = property(_get_R)
 
     def change_E(self, old_gamma, new_gamma):
+        """
+        Changes the energy of the element.
+        """
         pass
 
     @property
     def ele_name(self):
+        """
+        Returns the elegant-styled name.
+        """
         name = 'SCATTER_{}_{ind:03.0f}'.format(self.name, self.ind)
         return name
 
     @property
     def ele_string(self, ind, gamma):
+        """
+        Returns the full elegant entry.
+        """
         string = (
             '{name}\t:SCATTER , &\n'
             '\t\tXP = {xp}    , &\n'

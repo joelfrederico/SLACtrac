@@ -1,29 +1,46 @@
-import numpy as _np
+import os as _os
+on_rtd = _os.environ.get('READTHEDOCS', None) == 'True'
+if not on_rtd:
+    import numpy as _np
+
 
 class BeamParams(object):
+    """
+    Calculates Courant-Snyder parameters and beam properties in a self-consistent manner.
+
+    In order to set up the class, pass in:
+
+    * *beta*: Beta function value in meters
+    * *alpha*: Alpha function value
+    * *emit* or *emit_n*: Either emittance or normalized emittance in SI units
+    * *gamma_en*: Relativistic gamma :math:`\\gamma`
+    * *spotsize*: RMS of :math:`x` coordinate
+    * *divergence*: RMS of :math:`x'` coordinate
+    * *r* or *avg_xxp*: The average correlation of :math:`x` and :math:`x'`
+    """
     def __repr__(self):
-        return '<{} at {}; beta={}, alpha={}>'.format(self.__class__.__module__,hex(id(self)),self.beta,self.alpha)
+        return '<{} at {}; beta={}, alpha={}>'.format(self.__class__.__module__, hex(id(self)), self.beta, self.alpha)
 
     def __init__(self,
-            beta=None,alpha=None,emit=None,emit_n=None,gamma=None,
-            spotsize=None,divergence=None,r=None,avg_xxp=None):
+            beta=None, alpha=None, emit=None, emit_n=None, gamma_en=None,
+            spotsize=None, divergence=None, r=None, avg_xxp=None):
         # If not enough info for Twiss
-        emit_norm_insufficient = (emit_n==None or gamma==None)
-        emit_geom_insufficient = emit==None
-        emit_insufficient = (emit_geom_insufficient and emit_norm_insufficient)
-        shape_insufficient = (beta==None or alpha==None)
-        twiss_insufficient = (shape_insufficient or emit_insufficient)
-        moments_insufficient = (spotsize==None or divergence==None or (r==None and avg_xxp==None))
+        emit_norm_insufficient = (emit_n is None) or (gamma_en is None)
+        emit_geom_insufficient = emit is None
+        emit_insufficient      = (emit_geom_insufficient and emit_norm_insufficient)
+        shape_insufficient     = (beta is None) or (alpha is None)
+        twiss_insufficient     = (shape_insufficient or emit_insufficient)
+        moments_insufficient   = (spotsize is None) or (divergence is None) or ( (r is None) and (avg_xxp is None) )
 
         # Validation that there's enough info to construct everything
         if twiss_insufficient and moments_insufficient:
             raise ValueError('Not enough information to construct Twiss values')
 
         if twiss_insufficient:
-            if avg_xxp!=None:
+            if avg_xxp is not None:
                 emit = _np.sqrt(spotsize**2 * divergence**2 - avg_xxp**2)
                 corr_sign = _np.sign(avg_xxp)
-            elif r!=None:
+            elif r is not None:
                 emit = spotsize * divergence * _np.sqrt(1-r**2)
                 corr_sign = _np.sign(r)
             else:
@@ -32,82 +49,118 @@ class BeamParams(object):
             gamma = divergence**2/emit
             alpha = -corr_sign * _np.sqrt(gamma*beta-1)
         else:
-            def _get_geom_emit(emit=None,emit_n=None,gamma=None):
-                if emit==None and emit_n==None:
+            def _get_geom_emit(emit=None, emit_n=None, gamma=None):
+                if emit is None and emit_n is None:
                     raise ValueError('Did not specify an emittance!')
-                if emit!=None and emit_n!=None:
+                if emit is not None and emit_n is not None:
                     raise ValueError('Specified too many emittance values!')
-                if emit_n!=None:
+                if emit_n is not None:
                     # print emit_n
                     emit = _np.float64(emit_n)/_np.float64(gamma)
                 else:
                     emit = _np.float64(emit)
                 return emit
-            emit=_get_geom_emit(emit=emit,emit_n=emit_n,gamma=gamma)
+            emit = _get_geom_emit(emit=emit, emit_n=emit_n, gamma=gamma_en)
 
-        self.beta=_np.float64(beta)
-        self.alpha=_np.float64(alpha)
-        self.emit=_np.float64(emit)
+        self.beta  = _np.float64(beta)
+        self.alpha = _np.float64(alpha)
+        self.emit  = _np.float64(emit)
 
-    def set_emit_n(self,emit_n,gamma):
-        self.emit=_np.float64(emit_n/gamma)
-
+    def set_emit_n(self, emit_n, gamma):
+        """
+        Set the normalized emittance of the beam.
+        """
+        self.emit = _np.float64(emit_n/gamma)
 
     # Definte beta property
     # Validate beta > 0
-    def _get_beta(self):
+    @property
+    def beta(self):
+        """
+        The beta function of the beam
+        """
         return self._beta
-    def _set_beta(self,value):
+
+    @beta.setter
+    def beta(self, value):
         if not (value > 0):
             raise ValueError('Beta must be greater than zero: requested beta={}.'.format(value))
-        self._beta=value
-    beta = property(_get_beta,_set_beta)
-    
-    def _get_betastar(self):
-        return 1.0/self.gamma
-    betastar=property(_get_betastar)
+        self._beta = value
 
-    def _get_sstar(self):
+    @property
+    def betastar(self):
+        """
+        The minimum beta function of the beam in vacuum.
+        """
+        return 1.0/self.gamma
+
+    @property
+    def sstar(self):
+        """
+        The distance from the minimum beta function of the beam in vacuum.
+        """
         return self.alpha/self.gamma
-    sstar=property(_get_sstar)
 
     # Define gamma property
     # Derived from beta and alpha
-    def _get_gamma(self):
-        return (1+_np.power(self.alpha,2))/self.beta
-    gamma=property(_get_gamma)
+    @property
+    def gamma(self):
+        """
+        The gamma function of the beam
+        """
+        return (1+_np.power(self.alpha, 2))/self.beta
 
     # Define T matrix
     # Derived from beta, alpha, and gamma
-    def _get_T(self):
-        return _np.array([[self.beta,-self.alpha],[-self.alpha,self.gamma]])
-    T=property(_get_T)
+    @property
+    def T(self):
+        """
+        The beam T matrix.
+        """
+        return _np.array([[self.beta, -self.alpha], [-self.alpha, self.gamma]])
 
     # Define transport method
     # Returns new twiss given R matrix.
-    def transport(self,R):
-        T2 = _np.dot(_np.dot(R,self.T),_np.transpose(R))
-        betaf = T2[0,0]
-        alphaf = -T2[0,1]
-        return BeamParams(beta=betaf,alpha=alphaf,emit=self.emit)
+    def transport(self, R):
+        """
+        Given a transport matrix *R*, return the new beam parameters.
+
+        Returns :class:`slactrac.BeamParams`.
+        """
+        T2 = _np.dot(_np.dot(R, self.T), _np.transpose(R))
+        betaf = T2[0, 0]
+        alphaf = -T2[0, 1]
+        return BeamParams(beta=betaf, alpha=alphaf, emit=self.emit)
 
     # Define spotsize method
-    def _get_spotsize(self):
+    @property
+    def spotsize(self):
+        """
+        The RMS size of the beam.
+        """
         return _np.sqrt(self.beta*self.emit)
-    spotsize=property(_get_spotsize)
 
-    def _get_divergence(self):
+    @property
+    def divergence(self):
+        """
+        The divergence of the beam.
+        """
         return _np.sqrt(self.gamma*self.emit)
-    def _set_divergence(self,value):
+
+    @divergence.setter
+    def divergence(self, value):
         self.emit = value**2/self.gamma
-        # print self.divergence
-        # print self.emit
-    divergence=property(_get_divergence,_set_divergence)
 
-    def _get_avg_xxp(self):
-         return -self.alpha*self.emit
-    avg_xxp = property(_get_avg_xxp)
+    @property
+    def avg_xxp(self):
+        """
+        The average of coordinates :math:`x` and :math:`x'`.
+        """
+        return -self.alpha*self.emit
 
-    def _get_minspotsize(self):
+    @property
+    def minspotsize(self):
+        """
+        The RMS size of the beam at its smallest in vacuum.
+        """
         return _np.sqrt(self.betastar*self.emit)
-    minspotsize = property(_get_minspotsize)

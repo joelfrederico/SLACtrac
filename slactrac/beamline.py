@@ -1,23 +1,33 @@
-# import scipy as _sp
+import os as _os
+on_rtd = _os.environ.get('READTHEDOCS', None) == 'True'
+if not on_rtd:
+    import numpy as _np
 from .BeamParams import BeamParams as _BeamParams
-from .baseclass import baseclass
+from .baseclass import baseclass as _baseclass
 from .conversions import gamma2GeV as _gamma2GeV
 import copy as _copy
-# import ipdb
-import logging
-import numpy as _np
-import warnings
+import logging as _logging
+import warnings as _warnings
 
-logger = logging.getLogger(__name__)
-#  loggerlevel = logging.DEBUG
-loggerlevel = 9
+_logger = _logging.getLogger(__name__)
+#  _loggerlevel = _logging.DEBUG
+_loggerlevel = 9
 
 #  class Elements(object):
 #      def __init__(self, element_list, verbose=None):
 #          self._elements
 
 
-class Beamline(baseclass):
+class Beamline(_baseclass):
+    """
+    Represents a beamline composed of various elements.
+
+    * *element_list*: A list of all the elements in order in the beamline.
+    * *gamma*: The beamline energy.
+    * *beam_x*: :class:`slactrac.Beamparams` class representing the x coordinates.
+    * *beam_y*: :class:`slactrac.Beamparams` class representing the y coordinates.
+    * *verbose*: If true, prints details of beam setup on the terminal.
+    """
     _type    = 'beamline'
     _order   = int(1)
 
@@ -35,41 +45,54 @@ class Beamline(baseclass):
             if (element._order > self._order):
                 self._order = element._order
             if element.name is None:
-                warnings.warn('Missing name for {}-th element of beamline element list'.format(i), SyntaxWarning, stacklevel=2)
+                _warnings.warn('Missing name for {}-th element of beamline element list'.format(i), SyntaxWarning, stacklevel=2)
             element.ind = i
 
     def change_verbose(self, verbose=False):
+        """
+        Change whether the beamline is verbose.
+        """
         for i, element in enumerate(self.elements):
             self.elements[i].verbose = verbose
 
     # Define property length
-    def _get_length(self):
+    @property
+    def length(self):
+        """
+        The length of the beamline.
+        """
         length = 0
         for element in self.elements:
             length += element._length
         return length
-    length = property(_get_length, doc='The length of the beamline.')
 
     # Define transfer matrix R property
-    def _getR(self):
+    @property
+    def R(self):
+        """
+        The transfer matrix R for the beamline.
+        """
         R = _np.identity(6)
         for i, element in enumerate(self.elements):
             R = _np.dot(element.R, R)
         return R
-    R = property(_getR, doc='The transfer matrix R for the beamline.')
 
     # Define gamma property for beamlines
     # If you change gamma, it changes for all elements
-    def _get_gamma(self):
+    @property
+    def gamma(self):
+        """
+        The energy setpoint of the beamline.
+        """
         return self._gamma
 
-    def _set_gamma(self, gamma):
+    @gamma.setter
+    def gamma(self, gamma):
         gamma = _np.float64(gamma)
         for element in self.elements:
             # Changes energy of element
             element.change_E(self._gamma, gamma)
         self._gamma = gamma
-    gamma = property(_get_gamma, _set_gamma)
 
     def _get_beam_end(self, beam, slice_var):
         beamtemp = _copy.deepcopy(beam)
@@ -96,23 +119,36 @@ class Beamline(baseclass):
         out = beamtemp.transport(R[slice_var, slice_var])
         return out
 
-    def _get_beam_x_end(self):
+    @property
+    def beam_x_end(self):
+        """
+        The beam parameters in x at the end of the beamline.
+        """
         slice_var = slice(0, 2)
         out = self._get_beam_end(self.beam_x, slice_var)
         return out
-    beam_x_end = property(_get_beam_x_end)
 
-    def _get_beam_y_end(self):
+    @property
+    def beam_y_end(self):
+        """
+        The beam parameters in y at the end of the beamline.
+        """
         slice_var = slice(2, 4)
         out = self._get_beam_end(self.beam_y, slice_var)
         return out
-    beam_y_end = property(_get_beam_y_end)
 
-    def _get_spotsize_x_end(self, emit=None, emit_n=None):
+    @property
+    def spotsize_x_end(self, emit=None, emit_n=None):
+        """
+        The beam spotsize in x at the end of the beamline.
+        """
         return self.beam_x_end.spotsize
-    spotsize_x_end = property(_get_spotsize_x_end)
 
-    def _get_spotsize_y_end(self):
+    @property
+    def spotsize_y_end(self):
+        """
+        The beam spotsize in x at the end of the beamline.
+        """
         if self.verbose:
             print('================================================')
             print('Verbose Beamline Printing in _get_spotsize_y_end...')
@@ -127,9 +163,13 @@ class Beamline(baseclass):
             print('\tFinal spot size: {:.3f} mm'.format(out*1e3))
             print('\t------------------------------------------------')
         return out
-    spotsize_y_end = property(_get_spotsize_y_end)
 
     def elegant_lte(self, filename='out.lte', scatter_enable=False):
+        """
+        Writes the beamline to an Elegant lte lattice file with *filename*.
+
+        * *scatter_enable*: Determines if scatter elements are used.
+        """
         f = open(filename, 'w')
         string = 'C\t:CHARGE,TOTAL=3.2E-09'
         f.write(string + '\n')
@@ -148,41 +188,8 @@ class Beamline(baseclass):
                 string = obj.ele_string
                 names = _np.append(names, obj.ele_name)
 
-            #  if obj._type == 'drift':
-            #      name = 'CSRD{:02.0f}'.format(i)
-            #      names = _np.append(names, name)
-            #      string = '{}\t:CSRDRIF,L={},USE_STUPAKOV=1,N_KICKS=1'.format(name,obj.length)
-            #  elif obj._type == 'bend':
-            #      name = 'BEND{:02.0f}'.format(i)
-            #      names = _np.append(names, name)
-            #      string = ('{}\t:CSRCSBEN,L={:0.10e}, &\n'
-            #              '\t\tANGLE={}, &\n'
-            #              '\t\tTILT={}, &\n'
-            #              '\t\tN_KICKS=20, &\n'
-            #              '\t\tSG_HALFWIDTH=1,&\n'
-            #              '\t\tSG_ORDER=1,&\n'
-            #              '\t\tSTEADY_STATE=0,&\n'
-            #              '\t\tBINS=500').format(name,obj.length,obj.angle,obj.tilt)
-            #  elif obj._type == 'quad':
-            #      name = 'QUAD{:02.0f}'.format(i)
-            #      names = _np.append(names,name)
-            #      string = '{}\t:QUAD,L={},K1={}'.format(name,obj.length,obj.K1)
-            #  elif obj._type == 'scatter':
-            #      name = 'SCATTER{:02.0f}'.format(i)
-            #      string = ('{name}\t:SCATTER,&\n'
-            #              '\t\tXP={xp}, &\n'
-            #              '\t\tYP={yp}'
-            #              ).format(name=name,
-            #                      xp=obj.theta_rms(sltr.gamma2GeV(self.gamma)),
-            #                      yp=obj.theta_rms(sltr.gamma2GeV(self.gamma))
-            #                      )
-            #      if scatter_enable:
-            #          names = _np.append(names,name)
-            #  else:
-            #      raise ValueError('Element not a drift, bend, or quad')
-
-            logger.log(level=loggerlevel, msg='Name is: {}'.format(obj.ele_name))
-            logger.log(level=loggerlevel, msg='Iteration is: {}'.format(i))
+            _logger.log(level=_loggerlevel, msg='Name is: {}'.format(obj.ele_name))
+            _logger.log(level=_loggerlevel, msg='Iteration is: {}'.format(i))
             f.write(string+'\n\n')
 
         # Write beamline

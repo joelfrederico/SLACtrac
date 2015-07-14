@@ -1,27 +1,39 @@
-import ipdb
-import jinja2 as jj
-import logging
-import os
-import pkg_resources
-import shlex
-import shutil
-import tempfile
-import subprocess
+import jinja2 as _jj
+import os as _os
+import pkg_resources as _pkg_resources
+import shlex as _shlex
+import shutil as _shutil
+import tempfile as _tempfile
+import subprocess as _subprocess
 
-logger=logging.getLogger(__name__)
-loggerlevel = logging.DEBUG
-#  loggerlevel = 9
+import logging as _logging
+_logger      = _logging.getLogger(__name__)
+_loggerlevel = _logging.DEBUG
+#  _loggerlevel = 9
 
 __all__ = ['elegant_sim']
 
-def elegant_sim(beamline,dir=None,filename=None,**kwargs):
+
+def elegant_sim(beamline, dir=None, filename=None, **kwargs):
+    """
+    Simulates *beamline* in directory *dir* with filename *filename*.
+
+    * *dir*: If none, simulated in a :func:`tempfile.mkdtemp` temporary directory.
+    * *filename*: If none, simulated with a :func:`tempfile.mkstemp` temporary file.
+
+    Returns :code:`path, root, ext` of the simulation where:
+
+    * *path*: The path of the simulation
+    * *root*: The filename of the simulation
+    * *ext*: The extension of the simulation
+    """
     # ======================================
     # If path isn't specified, create
     # temporary one
     # ======================================
     if dir is None:
-        path = tempfile.mkdtemp()
-        logger.log(level=loggerlevel,msg='Path is: {}'.format(path))
+        path = _tempfile.mkdtemp()
+        _logger.log(level=_loggerlevel, msg='Path is: {}'.format(path))
     else:
         path = dir
 
@@ -29,52 +41,52 @@ def elegant_sim(beamline,dir=None,filename=None,**kwargs):
     # Open up a temporary file in the path
     # ======================================
     if filename is None:
-        fd,filename = tempfile.mkstemp(dir=path,prefix='out_',suffix='.ele')
-        f = os.fdopen(fd,'w+')
+        fd, filename = _tempfile.mkstemp(dir=path, prefix='out_', suffix='.ele')
+        f = _os.fdopen(fd, 'w+')
     else:
-        f = open(os.path.join(path,filename),'w+')
-    logger.log(level=loggerlevel,msg='Filename is: {}'.format(filename))
+        f = open(_os.path.join(path, filename), 'w+')
+    _logger.log(level=_loggerlevel, msg='Filename is: {}'.format(filename))
 
-    basename = os.path.basename(filename)
-    root,ext = os.path.splitext(basename)
-    lte_name = os.path.join(path,'{}.lte'.format(root))
+    basename = _os.path.basename(filename)
+    root, ext = _os.path.splitext(basename)
+    lte_name = _os.path.join(path, '{}.lte'.format(root))
     beamline.elegant_lte(filename=lte_name)
     
     # ======================================
     # Get template path from package and
     # load template
     # ======================================
-    templates_path = pkg_resources.resource_filename(__name__,'templates')
-    loader = jj.FileSystemLoader(templates_path)
-    env = jj.Environment(loader=loader)
+    templates_path = _pkg_resources.resource_filename(__name__, 'templates')
+    loader = _jj.FileSystemLoader(templates_path)
+    env = _jj.Environment(loader=loader)
     template = env.get_template('template.ele')
     
     # ======================================
     # Generate ele file
     # ======================================
-    template.stream(filename=lte_name,matched=0,**kwargs).dump(f)
+    template.stream(filename=lte_name, matched=0, **kwargs).dump(f)
     f.close()
 
     # ======================================
     # Run Elegant
     # ======================================
     command = 'elegant {}'.format(filename)
-    logger.log(level=loggerlevel,msg='Command is: {}'.format(command))
+    _logger.log(level=_loggerlevel, msg='Command is: {}'.format(command))
 
-    log_name = os.path.join(path,'{}.log'.format(root))
-    f_log = open(log_name,'w+')
-    logger.log(level=loggerlevel,msg='Log file is: {}'.format(log_name))
+    log_name = _os.path.join(path, '{}.log'.format(root))
+    f_log = open(log_name, 'w+')
+    _logger.log(level=_loggerlevel, msg='Log file is: {}'.format(log_name))
 
-    #  fnull = open(os.devnull,'w')
-    cwdu = os.getcwdu()
-    os.chdir(path)
-    subprocess.call(shlex.split(command),stdout=f_log,stderr=f_log)
-    os.chdir(cwdu)
+    #  fnull = open(_os.devnull, 'w')
+    cwdu = _os.getcwdu()
+    _os.chdir(path)
+    _subprocess.call(_shlex.split(command), stdout=f_log, stderr=f_log)
+    _os.chdir(cwdu)
 
     # ======================================
     # Clean temporary directory if necessary
     # ======================================
     if dir is None:
-        shutil.rmtree(path)
+        _shutil.rmtree(path)
 
-    return path,root,ext
+    return path, root, ext
