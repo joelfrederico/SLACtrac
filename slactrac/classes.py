@@ -1,4 +1,7 @@
-import numpy as np
+import os as _os
+_on_rtd = _os.environ.get('READTHEDOCS', None) == 'True'
+if not _on_rtd:
+    import numpy as _np
 
 __all__ = ['Bunch']
 
@@ -8,7 +11,7 @@ class Bunch(object):
     A class representing a bunch of particles. (Unfinished)
     """
     def __init__(self, x, xp, y, yp, z, delta, parts=None):
-        self._parts = np.zeros(6, np.size(x))
+        self._parts = _np.zeros(6, _np.size(x))
 
     @property
     def x(self):
