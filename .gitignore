@@ -3,3 +3,5 @@
 *~
 *.egg-info
 _build
+build
+dist
