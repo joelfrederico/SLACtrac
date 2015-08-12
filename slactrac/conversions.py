@@ -46,4 +46,4 @@ def eV2joule(E):
     else:
         E = _np.array(E, dtype='float')
 
-    return - E * _spc.eV
+    return E * _spc.eV
