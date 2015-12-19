@@ -177,7 +177,6 @@ class Beamline(_baseclass):
 
         # Write elements
         for i, obj in enumerate(self.elements):
-            # ipdb.set_trace()
             if obj._type == 'scatter':
                 if scatter_enable:
                     string = obj.ele_string(i, self.gamma)
