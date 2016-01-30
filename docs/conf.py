@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # SLACtrac documentation build configuration file, created by
-# sphinx-quickstart on Sun Jul 12 20:41:17 2015.
+# sphinx-quickstart on Sat Jul 11 17:33:57 2015.
 #
 # This file is execfile()d with the current directory set to its
 # containing dir.
@@ -16,31 +16,31 @@
 import os
 import re
 import shlex
-import sphinx_py3doc_enhanced_theme
 import sys
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('./numpydoc'))
 
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
-#needs_sphinx = '1.0'
+# needs_sphinx = '1.0'
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinx.ext.doctest',
-    'sphinx.ext.intersphinx',
-    'sphinx.ext.todo',
-    'sphinx.ext.coverage',
     'sphinx.ext.pngmath',
-    'sphinx.ext.ifconfig',
-    'sphinx.ext.viewcode',
+    'numpydoc',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.coverage',
+    'sphinx.ext.doctest',
+    'sphinx.ext.autosummary',
+    # 'sphinx.ext.ifconfig',
+    # 'sphinx.ext.todo',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -52,10 +52,10 @@ templates_path = ['_templates']
 source_suffix = '.rst'
 
 # The encoding of source files.
-#source_encoding = 'utf-8-sig'
+# source_encoding = 'utf-8-sig'
 
 # The master toctree document.
-master_doc = 'index'
+# master_doc = 'index'
 
 # General information about the project.
 project = 'SLACtrac'
@@ -67,7 +67,7 @@ author = 'Joel Frederico, SLAC National Accelerator Laboratory'
 # built documents.
 #
 # The full version, including alpha/beta/rc tags.
-release = '1.0.2'
+release = '1.11.0'
 # The short X.Y version.
 match = re.match('\w*\.\w*', release)
 if match:
@@ -84,97 +84,78 @@ language = None
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
-#today = ''
+# today = ''
 # Else, today_fmt is used as the format for a strftime call.
-#today_fmt = '%B %d, %Y'
+# today_fmt = '%B %d, %Y'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['_build']
+exclude_patterns = ['_build', 'scipy-sphinx-theme', 'numpydoc']
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
-#default_role = None
+default_role = "autolink"
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
-#add_function_parentheses = True
+add_function_parentheses = False
 
 # If true, the current module name will be prepended to all description
 # unit titles (such as .. function::).
-#add_module_names = True
+# add_module_names = True
 
 # If true, sectionauthor and moduleauthor directives will be shown in the
 # output. They are ignored by default.
-#show_authors = False
+# show_authors = False
 
 # The name of the Pygments (syntax highlighting) style to use.
-# pygments_style = 'sphinx'
-pygments_style = 'friendly'
+pygments_style = 'sphinx'
 
 # A list of ignored prefixes for module index sorting.
-#modindex_common_prefix = []
+# modindex_common_prefix = []
 
 # If true, keep warnings as "system message" paragraphs in the built documents.
-#keep_warnings = False
+# keep_warnings = False
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
 
 
 # -- Options for HTML output ----------------------------------------------
+themedir = os.path.join(os.curdir, 'scipy-sphinx-theme', '_theme')
+print('Theme directory is: {}'.format(themedir))
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-# html_theme = 'alabaster'
-html_theme = 'sphinx_py3doc_enhanced_theme'
+html_theme = 'scipy'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 html_theme_options = {
-    'bodyfont': '\'Lucida Grande\', Arial, sans-serif',
-    'headfont': '\'Lucida Grande\', Arial, sans-serif',
-    'footerbgcolor': 'white',
-    'footertextcolor': '#555555',
-    'relbarbgcolor': 'white',
-    'relbartextcolor': '#666666',
-    'relbarlinkcolor': '#444444',
-    'sidebarbgcolor': 'white',
-    'sidebartextcolor': '#444444',
-    'sidebarlinkcolor': '#444444',
-    'bgcolor': 'white',
-    'textcolor': '#222222',
-    'linkcolor': '#0072AA',
-    'visitedlinkcolor': '#6363bb',
-    'headtextcolor': '#1a1a1a',
-    'headbgcolor': 'white',
-    'headlinkcolor': '#aaaaaa',
-    # 'headshadow': False,
-    # 'codeshadow': False,
-    # 'newstylecode': False,
-    # 'highlightcurrent': False
-    'extrastyling': False,
+    "edit_link": True,
+    "sidebar": "right",
+    "rootlinks": [("http://github.com/joelfrederico/SLACtrac/", "Github"),
+                  ("http://slactrac.readthedocs.org/", "Docs")]
     }
 
 # Add any paths that contain custom themes here, relative to this directory.
-#html_theme_path = []
-html_theme_path = [sphinx_py3doc_enhanced_theme.get_html_theme_path()]
+html_theme_path = [themedir]
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-#html_title = None
+html_title = '{} v{} Manual'.format(project, version)
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
-#html_short_title = None
+# html_short_title = None
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
-#html_logo = None
+# html_logo = None
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
-#html_favicon = None
+# html_favicon = None
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -184,122 +165,132 @@ html_static_path = ['_static']
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
 # directly to the root of the documentation.
-#html_extra_path = []
+# html_extra_path = []
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
-#html_last_updated_fmt = '%b %d, %Y'
+html_last_updated_fmt = '%b %d, %Y'
 
 # If true, SmartyPants will be used to convert quotes and dashes to
 # typographically correct entities.
-#html_use_smartypants = True
+# html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
-#html_sidebars = {}
+# html_sidebars = {}
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
-#html_additional_pages = {}
+# html_additional_pages = {}
 
 # If false, no module index is generated.
-#html_domain_indices = True
+html_domain_indices = False
 
 # If false, no index is generated.
-#html_use_index = True
+# html_use_index = True
 
 # If true, the index is split into individual pages for each letter.
-#html_split_index = False
+# html_split_index = False
 
 # If true, links to the reST sources are added to the pages.
-#html_show_sourcelink = True
+html_show_sourcelink = False
 
 # If true, "Created using Sphinx" is shown in the HTML footer. Default is True.
-#html_show_sphinx = True
+# html_show_sphinx = True
 
 # If true, "(C) Copyright ..." is shown in the HTML footer. Default is True.
-#html_show_copyright = True
+# html_show_copyright = True
 
 # If true, an OpenSearch description file will be output, and all pages will
 # contain a <link> tag referring to it.  The value of this option must be the
 # base URL from which the finished HTML is served.
-#html_use_opensearch = ''
+# html_use_opensearch = ''
 
 # This is the file name suffix for HTML files (e.g. ".xhtml").
-#html_file_suffix = None
+# html_file_suffix = None
 
 # Language to be used for generating the HTML full-text search index.
 # Sphinx supports the following languages:
 #   'da', 'de', 'en', 'es', 'fi', 'fr', 'h', 'it', 'ja'
 #   'nl', 'no', 'pt', 'ro', 'r', 'sv', 'tr'
-#html_search_language = 'en'
+# html_search_language = 'en'
 
 # A dictionary with options for the search language support, empty by default.
 # Now only 'ja' uses this config value
-#html_search_options = {'type': 'default'}
+# html_search_options = {'type': 'default'}
 
 # The name of a javascript file (relative to the configuration directory) that
 # implements a search results scorer. If empty, the default will be used.
-#html_search_scorer = 'scorer.js'
+# html_search_scorer = 'scorer.js'
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'SLACtracdoc'
+htmlhelp_basename = 'SLACtrac'
+
+html_additional_pages = {
+    'index': 'indexcontent.html',
+    }
+
+html_use_modindex = True
+html_copy_source = False
 
 # -- Options for LaTeX output ---------------------------------------------
 
 latex_elements = {
-# The paper size ('letterpaper' or 'a4paper').
-#'papersize': 'letterpaper',
-
-# The font size ('10pt', '11pt' or '12pt').
-#'pointsize': '10pt',
-
-# Additional stuff for the LaTeX preamble.
-#'preamble': '',
-
-# Latex figure (float) alignment
-#'figure_align': 'htbp',
+    # The paper size ('letterpaper' or 'a4paper').
+    # 'papersize': 'letterpaper',
+    
+    # The font size ('10pt', '11pt' or '12pt').
+    # 'pointsize': '10pt',
+    
+    # Additional stuff for the LaTeX preamble.
+    # 'preamble': '',
+    
+    # Latex figure (float) alignment
+    # 'figure_align': 'htbp',
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
+_stdauthor = 'Written by Joel Frederico'
 latex_documents = [
-  (master_doc, 'SLACtrac.tex', 'SLACtrac Documentation',
-   'Joel Frederico, SLAC National Accelerator Laboratory', 'manual'),
+    ('reference/index', 'numpy-ref.tex', 'NumPy Reference',
+    _stdauthor, 'manual'),
+    ('user/index', 'numpy-user.tex', 'NumPy User Guide',
+    _stdauthor, 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
-#latex_logo = None
+# latex_logo = None
 
 # For "manual" documents, if this is true, then toplevel headings are parts,
 # not chapters.
-#latex_use_parts = False
+# latex_use_parts = False
 
 # If true, show page references after internal links.
-#latex_show_pagerefs = False
+# latex_show_pagerefs = False
 
 # If true, show URL addresses after external links.
-#latex_show_urls = False
+# latex_show_urls = False
 
 # Documents to append as an appendix to all manuals.
-#latex_appendices = []
+# latex_appendices = []
 
 # If false, no module index is generated.
-#latex_domain_indices = True
+# latex_domain_indices = True
 
 
 # -- Options for manual page output ---------------------------------------
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    (master_doc, 'slactrac', 'SLACtrac Documentation',
-     [author], 1)
-]
+# man_pages = [
+#     (master_doc, 'slactrac', 'SLACtrac Documentation',
+#      [author], 1)
+# ]
 
 # If true, show URL addresses after external links.
-#man_show_urls = False
+# man_show_urls = False
 
 
 # -- Options for Texinfo output -------------------------------------------
@@ -308,29 +299,102 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  (master_doc, 'SLACtrac', 'SLACtrac Documentation',
-   author, 'SLACtrac', 'One line description of project.',
-   'Miscellaneous'),
+    ("contents", 'numpy', 'Numpy Documentation', _stdauthor, 'Numpy',
+    "NumPy: array processing for numbers, strings, records, and objects.",
+    'Programming',
+    1),
 ]
 
 # Documents to append as an appendix to all manuals.
-#texinfo_appendices = []
+# texinfo_appendices = []
 
 # If false, no module index is generated.
-#texinfo_domain_indices = True
+# texinfo_domain_indices = True
 
 # How to display URL addresses: 'footnote', 'no', or 'inline'.
-#texinfo_show_urls = 'footnote'
+# texinfo_show_urls = 'footnote'
 
 # If true, do not generate a @detailmenu in the "Top" node's menu.
-#texinfo_no_detailmenu = False
+# texinfo_no_detailmenu = False
 
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3.4', None),
-    'matplotlib': ('http://matplotlib.sourceforge.net/', None),
     'numpy': ('http://docs.scipy.org/doc/numpy/', None),
     'scipy': ('http://docs.scipy.org/doc/scipy/reference/', None),
-    'h5py': ('http://docs.h5py.org/en/latest', None),
     }
+
+# -----------------------------------------------------------------------------
+# Autosummary
+# -----------------------------------------------------------------------------
+
+import glob
+autosummary_generate = glob.glob("reference/**/*.rst", recursive=True)
+print('Autosummary_generate: {}'.format(autosummary_generate))
+
+# -----------------------------------------------------------------------------
+# Source code links
+# -----------------------------------------------------------------------------
+
+import inspect
+from os.path import relpath, dirname
+import slactrac
+
+for name in ['sphinx.ext.linkcode', 'numpydoc.linkcode']:
+    try:
+        __import__(name)
+        extensions.append(name)
+        break
+    except ImportError:
+        pass
+else:
+    print("NOTE: linkcode extension not found -- no links to source generated")
+
+
+def linkcode_resolve(domain, info):
+    """
+    Determine the URL corresponding to Python object
+    """
+    if domain != 'py':
+        return None
+
+    modname = info['module']
+    fullname = info['fullname']
+
+    submod = sys.modules.get(modname)
+    if submod is None:
+        return None
+
+    obj = submod
+    for part in fullname.split('.'):
+        try:
+            obj = getattr(obj, part)
+        except:
+            return None
+
+    try:
+        fn = inspect.getsourcefile(obj)
+    except:
+        fn = None
+    if not fn:
+        return None
+
+    try:
+        source, lineno = inspect.getsourcelines(obj)
+    except:
+        lineno = None
+
+    if lineno:
+        linespec = "#L%d-L%d" % (lineno, lineno + len(source) - 1)
+    else:
+        linespec = ""
+
+    fn = relpath(fn, start=dirname(slactrac.__file__))
+
+    if 'dev' in slactrac.__version__:
+        return "http://github.com/joelfrederico/SLACtrac/blob/master/slactrac/%s%s" % (
+            fn, linespec)
+    else:
+        return "http://github.com/joelfrederico/SLACtrac/blob/v%s/slactrac/%s%s" % (
+            slactrac.__version__, fn, linespec)

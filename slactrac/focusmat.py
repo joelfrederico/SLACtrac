@@ -13,10 +13,17 @@ class Focus(_baseclass):
     """
     Represents a transversely-focusing element (e.g. ion column).
 
-    * *length*: Length of the element
-    * *K1*: Geometric focusing strength of the element
-    * *order*: Order to calculate the transfer matrix
-    * *name*: The name used to identify the element
+    Parameters
+    ----------
+
+    length : float
+        Length of the element
+    K1 : float
+        Geometric focusing strength of the element
+    order : int
+        Order to calculate the transfer matrix
+    name : str
+        The name used to identify the element
     """
     def __init__(self, length=0, K1=0, order=1):
         self._order = int(order)

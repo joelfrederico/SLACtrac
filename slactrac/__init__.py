@@ -30,8 +30,8 @@ from .quadmat import Quad
 from .focusmat import Focus
 from .beamline import Beamline
 from .scatter import Scatter
-from .BeamParams import BeamParams
-from .conversions import *
-from .elegant_sim import *
-from .bunchgen import *
-from .classes import *
+from .beamparams import BeamParams
+from .conversions import *      # noqa
+from .elegant_sim_mod import *  # noqa
+from .bunchgen import *         # noqa
+from .classes import *          # noqa

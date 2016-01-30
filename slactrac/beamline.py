@@ -2,7 +2,7 @@ import os as _os
 on_rtd = _os.environ.get('READTHEDOCS', None) == 'True'
 if not on_rtd:
     import numpy as _np
-from .BeamParams import BeamParams as _BeamParams
+from .beamparams import BeamParams as _BeamParams
 from .baseclass import baseclass as _baseclass
 from .conversions import gamma2GeV as _gamma2GeV
 import copy as _copy

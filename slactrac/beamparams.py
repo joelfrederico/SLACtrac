@@ -8,15 +8,27 @@ class BeamParams(object):
     """
     Calculates Courant-Snyder parameters and beam properties in a self-consistent manner.
 
-    In order to set up the class, pass in:
+    Parameters
+    ----------
 
-    * *beta*: Beta function value in meters
-    * *alpha*: Alpha function value
-    * *emit* or *emit_n*: Either emittance or normalized emittance in SI units
-    * *gamma_en*: Relativistic gamma :math:`\\gamma`
-    * *spotsize*: RMS of :math:`x` coordinate
-    * *divergence*: RMS of :math:`x'` coordinate
-    * *r* or *avg_xxp*: The average correlation of :math:`x` and :math:`x'`
+    beta : float
+        Beta function value in meters.
+    alpha : float
+        Alpha function value.
+    emit : float
+        Emittance in SI units.
+    emit_n : float
+        Normalized emittance in SI units.
+    gamma_en : float
+        Relativistic gamma :math:`\\gamma`
+    spotsize : float
+        RMS of :math:`x` coordinate.
+    divergence : float
+        RMS of :math:`x'` coordinate.
+    r : float
+        The average correlation of :math:`x` and :math:`x'`.
+    avg_xxp : float
+        The average correlation of :math:`x` and :math:`x'`.
     """
     def __repr__(self):
         return '<{} at {}; beta={}, alpha={}>'.format(self.__class__.__module__, hex(id(self)), self.beta, self.alpha)
