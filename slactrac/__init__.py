@@ -1,7 +1,7 @@
 # Author Joel Frederico, SLAC National Accelerator Laboratory
 """
 """
-__version__ = '1.0.3'
+__version__ = '1.1.0'
 __all__ = [
     'BeamParams',
     'Beamline',
