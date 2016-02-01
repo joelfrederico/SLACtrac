@@ -15,7 +15,7 @@ before_install:
 
 install:
   - conda install --yes python=$TRAVIS_PYTHON_VERSION atlas numpy scipy matplotlib nose
-  - pip install jinja2
+  - pip install jinja2 periodictable
 
 script:
   - "./nosetest.py"
@@ -29,6 +29,7 @@ deploy:
   - provider: pypi
     user: JoelFrederico
     password:
+      secure: Hlt8jt0a+8JnuP2nfZnDOO5XOXZsITtg6TuEx4bC0Lz1sJjAm95DOzhUgNwf3oAPJcgF1uzJaCURmjNKDr+AH5Cki23lT0S09gdb0mxpTzN1NPvOJThIn7SWJumI3K+3C/lkqZpN8GffrsN5tU0MoT5VChsOnC2oaroxNRr6nzMgywqrBcP5kdIbU/3wlvM0kUOCH11Z7VXmVnmh/S3N7gKbqSQ3IdkMwgAcg53kARraTLwo/fgeoRDBTsVB1/lF/kF+u2EuvnFJavGhpiES9Cj/MC+0PQH72BoermNTR6lRWuMdVW3NQbV+TF4n17otehCxVpdNbMv3yyDKdweYk17u5WqPsbSlOXQZ0vXxoWcaYRpnmc1T5c39YDK3qBv0I3mr/q9OIn/3XEbN356i91LZQKUNg12CY0wLpVUAnn0sQsCfHphIieiYk3/M+GXJOqRXjHE0Fuy8ymCxnzia+ykb0HN7lO6z0uaYkPnWaAYDoBs3jEbfXTG5W7GLKmmD9zXgHFP6m62aLMLk5oIUtWbygQwey5Q1tyfSJgZP+AFeTZ1HZwEkmZFmLdesfTzIjxd5JQeB8oniKbj3FyEbMwns2ddjfAtq9jIv3klwqnBqGW2shhyZgyxOQGaM9hJOHwFnSWlllTw0zFV2UCllVbJ4Q6uMqgFo+ccr2ecDDwU=
     on:
       tags: true
       repo: joelfrederico/SciSalt
