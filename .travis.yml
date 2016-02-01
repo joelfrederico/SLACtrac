@@ -23,6 +23,7 @@ script:
 deploy:
   - provider: releases
     api_key:
+      secure: ESaR/dG51htFp9VZ7h3Wj7w1rf3u524LX6i+3aeJRK/rCWLLYBOAf54S9clcPRS/EZwZNyRquBW8JqtapLYkORFth2tCxaSMKQE9eJr+1kXa76dBgzE+MSzjC8jX/h3wVpdiEutF7eKA+V4lDuwfUlx3vpCMCTd2XS8889YnU1W2LOVo5s2/VCR3wBplqQkRGKdE4RG9LSA6WG+4WaFm4CEI6PJBLvPwDlUgw4s5YQtN2fWitzwg0fzatNZuBxJPy+xXDRpC6cIKfT+AtUnXxSPLYYMuLGJOhgmFHe+7GYP5m9gkLgtZOKQJ3IHc5YTeB37uOvHe9ugOKEkgSrDykH/stpoMs3pgjDDL258Ag5JzI1gHfSoSooRkkD8yK/BdeN/d41Nww/scUH07oGdA/YqUzI+bKb2xK/tYILHNdXCxk/DwGmGF5DjHgHHL3U5uCSM3B9tmMSXCHbvHbv5ybRUPWYiU8eF52b/9xRE3wYJ2d+/G8GDe+SnVGRuYexUgOh6jsv+CpKV1OxpNuVkCFSy2EW8aEnBc1e4kciiz7V5CEcrn9WHoGtIiBzV3Vp+M/OhDUtKNMdcP9rNp8m/gl2w0Sec+xNI8xhQs4rsQZSGQbsmAGLlPbHiLWBU4wPadsRTEmV6vEWWYld1i7WcP+EiyzAGuM1XVraGvoWyIpLM=
     on:
       repo: joelfrederico/SciSalt
       tags: true
