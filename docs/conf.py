@@ -67,7 +67,7 @@ author = 'Joel Frederico, SLAC National Accelerator Laboratory'
 # built documents.
 #
 # The full version, including alpha/beta/rc tags.
-release = '1.1.2'
+release = '1.1.3'
 # The short X.Y version.
 match = re.match('\w*\.\w*', release)
 if match:
