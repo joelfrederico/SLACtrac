@@ -10,12 +10,23 @@ from .conversions import *
 
 class Scatter(_baseclass):
     """
-    Represents a foil element with:
+    Represents a foil element that scatters the beam.
 
-    * *thickness*: The thickness of the foil in SI units
-    * *radlength*: The radiation lenght of the foil
-    * *name*: The name used to identify the foil
-    * *verbose*: Whether or not to print information to the terminal
+    Parameters
+    ----------
+
+    length : float
+        Length of the element.
+    thickness : float
+        The thickness of the foil in SI units.
+    radlength : float
+        The radiation lenght of the foil.
+    order : int
+        Order to calculate the transfer matrix.
+    name : str
+        The name used to identify the element.
+    verbose : boolean
+        Whether or not to print information to the terminal
     """
     _type = 'scatter'
     _order = 1

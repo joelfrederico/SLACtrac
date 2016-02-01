@@ -22,11 +22,19 @@ class Beamline(_baseclass):
     """
     Represents a beamline composed of various elements.
 
-    * *element_list*: A list of all the elements in order in the beamline.
-    * *gamma*: The beamline energy.
-    * *beam_x*: :class:`slactrac.Beamparams` class representing the x coordinates.
-    * *beam_y*: :class:`slactrac.Beamparams` class representing the y coordinates.
-    * *verbose*: If true, prints details of beam setup on the terminal.
+    Parameters
+    ----------
+
+    element_list : float
+        A list of all the elements in order in the beamline.
+    gamma : float
+        The beamline energy.
+    beam_x : float
+        :class:`slactrac.Beamparams` class representing the x coordinates.
+    beam_y : float
+        :class:`slactrac.Beamparams` class representing the y coordinates.
+    verbose : float
+        If true, prints details of beam setup on the terminal.
     """
     _type    = 'beamline'
     _order   = int(1)

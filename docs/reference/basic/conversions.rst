@@ -1,4 +1,4 @@
-.. _slactrac.conversion:
+.. _slactrac.basic.conversion:
 
 ***********
 Conversions

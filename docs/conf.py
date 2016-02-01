@@ -329,8 +329,16 @@ intersphinx_mapping = {
 # Autosummary
 # -----------------------------------------------------------------------------
 
-import glob
-autosummary_generate = glob.glob("reference/**/*.rst", recursive=True)
+# import glob
+# autosummary_generate = glob.glob("reference/**/*.rst", recursive=True)
+# print('Autosummary_generate: {}'.format(autosummary_generate))
+
+import fnmatch
+autosummary_generate = []
+for dirpath, dirnames, filenames in os.walk('reference'):
+    for i, filename in enumerate(fnmatch.filter(filenames, '*.rst')):
+        autosummary_generate.append(os.path.join(dirpath, filename))
+
 print('Autosummary_generate: {}'.format(autosummary_generate))
 
 # -----------------------------------------------------------------------------

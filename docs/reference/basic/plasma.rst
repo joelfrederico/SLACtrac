@@ -1,4 +1,4 @@
-.. _slactrac.plasma:
+.. _slactrac.basic.plasma:
 
 *****************
 Plasma Simulation
@@ -12,5 +12,4 @@ Classes
 ```````
 
 .. autosummary::
-   :toctree: ./generated/
-
+   :toctree: ./generated/ 

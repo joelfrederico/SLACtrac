@@ -9,7 +9,17 @@ __all__ = ['Drift']
 
 class Drift(_baseclass):
     """
-    Represents a drift with *length* calculated to *order* to use the *name* to identify it.
+    Represents a drift element.
+
+    Parameters
+    ----------
+    
+    length : float
+        The length of the drift.
+    order : float
+        Order to calculate matrix elements.
+    name : str
+        Unique name to identify the element.
     """
     def __init__(self, length=0, order=1, name=None, **kwargs):
         self.name   = name

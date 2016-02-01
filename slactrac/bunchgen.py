@@ -2,7 +2,7 @@ import os as _os
 _on_rtd = _os.environ.get('READTHEDOCS', None) == 'True'
 if not _on_rtd:
     import numpy as _np
-from .classes import *
+from .classes import Bunch
 
 __all__ = [
     'gaussbunch_sigmas',
@@ -12,16 +12,28 @@ __all__ = [
 
 def gaussbunch_sigmas(sx, sxp, sy, syp, sz, sd, n_parts):
     """
-    Generates a gaussian bunch with RMS moments:
+    Generates a gaussian bunch with RMS moments.
 
-    * *sx*: RMS moment in :math:`x`
-    * *sxp*: RMS moment in :math:`x'`
-    * *sy*: RMS moment in :math:`y`
-    * *syp*: RMS moment in :math:`y'`
-    * *sz*: RMS moment in :math:`z'`
-    * *sd*: RMS moment in :math:`\\delta = \\frac{p - p_0}{p_0}`
+    Parameters
+    ----------
 
-    Returns :class:`slactrac.Bunch`.
+    sx : float
+        RMS moment in :math:`x`.
+    sxp : float
+        RMS moment in :math:`x'`.
+    sy : float
+        RMS moment in :math:`y`.
+    syp : float
+        RMS moment in :math:`y'`.
+    sz : float
+        RMS moment in :math:`z'`.
+    sd : float
+        RMS moment in :math:`\\delta = \\frac{p - p_0}{p_0}`.
+
+    Returns
+    -------
+    
+    bunch : :class:`slactrac.Bunch`.
     """
     x  = _np.random.normal(loc=0, scale=sx, size=n_parts)
     xp = _np.random.normal(loc=0, scale=sxp, size=n_parts)
@@ -39,12 +51,22 @@ def gaussbunch_twiss(Beam_x, Beam_y, sz, sd, n_parts, szd=0):
     """
     Generates a gaussian bunch with:
 
-    * *Beam_x*: :class:`slactrac.BeamParams` representation of beam properties in x
-    * *Beam_y*: :class:`slactrac.BeamParams` representation of beam properties in y
-    * *sz*: RMS moment in :math:`z'`
-    * *sd*: RMS moment in :math:`\\delta = \\frac{p - p_0}{p_0}`
+    Parameters
+    ----------
 
-    Returns :class:`slactrac.Bunch`.
+    Beam_x : float
+        :class:`slactrac.BeamParams` representation of beam properties in x.
+    Beam_y : float
+        :class:`slactrac.BeamParams` representation of beam properties in y.
+    sz : float
+        RMS moment in :math:`z'`.
+    sd : float
+        RMS moment in :math:`\\delta = \\frac{p - p_0}{p_0}`.
+
+    Returns
+    -------
+    
+    bunch : :class:`slactrac.Bunch`.
     """
     mean = _np.zeros(6)
     cov_xx = Beam_x.beta*Beam_x.emit

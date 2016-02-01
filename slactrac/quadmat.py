@@ -9,12 +9,19 @@ from .baseclass import baseclass
 
 class Quad(baseclass):
     """
-    Represents a quadrupole with:
+    Represents a quadrupole element.
 
-    * *length*: Length of the quad
-    * *K1*: Geometric focusing strength of the quad
-    * *order*: Order to calculate the transfer matrix
-    * *name*: The name used to identify the quad
+    Parameters
+    ----------
+    
+    length : float
+        The length of the magnet.
+    K1 : float
+        Geometric focusing strength of the quad.
+    order : float
+        Order to calculate matrix elements.
+    name : str
+        Unique name to identify the element.
     """
     def __init__(self, length=0, K1=0, order=1, name=None, **kwargs):
         self.name   = name

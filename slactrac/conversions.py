@@ -7,7 +7,13 @@ if not on_rtd:
 
 def gamma2GeV(gamma):
     """
-    Finds the energy in GeV of an electron with relativistic :math:`\\gamma` of *gamma*.
+    Finds the energy in GeV of an electron with relativistic Lorentz factor :math:`\\gamma`.
+
+    Parameters
+    ----------
+
+    gamma : float
+        Relativistic Lorentz factor :math:`\\gamma`.
     """
     n_pts = _np.size(gamma)
     if n_pts > 1:
@@ -21,7 +27,13 @@ def gamma2GeV(gamma):
 
 def GeV2gamma(E):
     """
-    Finds the relativistic :math:`\\gamma` for an electron with energy *E*
+    Finds the relativistic Lorentz factor :math:`\\gamma` of an electron from a given energy.
+
+    Parameters
+    ----------
+
+    E : float
+        Electron energy in GeV.
     """
     if _np.size(E) == 1:
         E = _np.float(E)
@@ -32,14 +44,26 @@ def GeV2gamma(E):
 
 def GeV2joule(E):
     """
-    Converts an energy *E* from units of GeV to joules.
+    Converts energy from units of GeV to joules.
+
+    Parameters
+    ----------
+
+    E : float
+        Energy in GeV.
     """
     return eV2joule(E) * _spc.giga
 
 
 def eV2joule(E):
     """
-    Converts an energy *E* from units of eV to joules.
+    Converts energy from units of eV to joules.
+
+    Parameters
+    ----------
+
+    E : float
+        Energy in eV.
     """
     if _np.size(E) == 1:
         E = _np.float(E)

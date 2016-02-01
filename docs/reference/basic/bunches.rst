@@ -15,7 +15,6 @@ Classes
    :toctree: ./generated/
 
    BeamParams
-   Bunch
 
 Functions
 `````````

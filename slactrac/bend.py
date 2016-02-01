@@ -11,7 +11,21 @@ __all__ = ['Bend']
 
 class Bend(_baseclass):
     """
-    Represents a bend with *length*, bend *angle*, rotation *rotate*, calculated to *order*, represented by *name*
+    Represents a bend element.
+    
+    Parameters
+    ----------
+    
+    length : float
+        The length of the magnet.
+    angle : float
+        The bend angle of the magnet.
+    rotate : float
+        The rotation about :math:`z` of the magnet.
+    order : float
+        Order to calculate matrix elements.
+    name : str
+        Unique name to identify the element.
     """
     def __init__(self, length=0, angle=0, order=1, rotate=0, name=None, **kwargs):
         self.name   = name
@@ -25,7 +39,7 @@ class Bend(_baseclass):
     @property
     def rotate(self):
         """
-        The orientation of the magnet.
+        The rotation about :math:`z` of the magnet.
         """
         return self._rotate
 

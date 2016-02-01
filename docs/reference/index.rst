@@ -16,8 +16,5 @@ For learning how to use SLACtrac, see also :ref:`user`.
 .. toctree::
    :maxdepth: 2
 
-   conversions
-   bunches
-   tracking
-   plasma
-   elegant
+   basic/index
+   PWFA/PWFA

@@ -1,4 +1,4 @@
-.. _slactrac.tracking:
+.. _slactrac.basic.tracking:
 
 ******************
 Tracking Particles

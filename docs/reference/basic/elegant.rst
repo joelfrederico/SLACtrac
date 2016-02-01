@@ -1,4 +1,4 @@
-.. _slactrac.elegant:
+.. _slactrac.basic.elegant:
 
 *******
 Elegant

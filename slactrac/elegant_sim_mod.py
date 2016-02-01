@@ -16,16 +16,22 @@ __all__ = ['elegant_sim']
 
 def elegant_sim(beamline, dir=None, filename=None, **kwargs):
     """
-    Simulates *beamline* in directory *dir* with filename *filename*.
+    Creates and runs a simulation in Elegant.
 
-    * *dir*: If none, simulated in a :func:`tempfile.mkdtemp` temporary directory.
-    * *filename*: If none, simulated with a :func:`tempfile.mkstemp` temporary file.
 
-    Returns :code:`path, root, ext` of the simulation where:
+    Parameters
+    ----------
 
-    * *path*: The path of the simulation
-    * *root*: The filename of the simulation
-    * *ext*: The extension of the simulation
+    dir : str
+        If none, simulated in a :func:`tempfile.mkdtemp` temporary directory.
+    filename : str
+        If none, simulated with a :func:`tempfile.mkstemp` temporary file.
+
+    Returns
+    -------
+
+    (path, root, ext) : (str, str, str)
+        A tuple of the path of the simulation, the filename of the simulation, and the extension of the simulation
     """
     # ======================================
     # If path isn't specified, create

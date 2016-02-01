@@ -35,3 +35,4 @@ from .conversions import *      # noqa
 from .elegant_sim_mod import *  # noqa
 from .bunchgen import *         # noqa
 from .classes import *          # noqa
+from . import PWFA
