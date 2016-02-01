@@ -14,7 +14,7 @@ before_install:
   - sudo ln -s /run/shm /dev/shm
 
 install:
-  - conda install --yes python=$TRAVIS_PYTHON_VERSION atlas numpy scipy matplotlib nose
+  - conda install --yes python=$TRAVIS_PYTHON_VERSION atlas numpy scipy nose
   - pip install jinja2 periodictable
 
 script:
@@ -25,7 +25,7 @@ deploy:
     api_key:
       secure: ESaR/dG51htFp9VZ7h3Wj7w1rf3u524LX6i+3aeJRK/rCWLLYBOAf54S9clcPRS/EZwZNyRquBW8JqtapLYkORFth2tCxaSMKQE9eJr+1kXa76dBgzE+MSzjC8jX/h3wVpdiEutF7eKA+V4lDuwfUlx3vpCMCTd2XS8889YnU1W2LOVo5s2/VCR3wBplqQkRGKdE4RG9LSA6WG+4WaFm4CEI6PJBLvPwDlUgw4s5YQtN2fWitzwg0fzatNZuBxJPy+xXDRpC6cIKfT+AtUnXxSPLYYMuLGJOhgmFHe+7GYP5m9gkLgtZOKQJ3IHc5YTeB37uOvHe9ugOKEkgSrDykH/stpoMs3pgjDDL258Ag5JzI1gHfSoSooRkkD8yK/BdeN/d41Nww/scUH07oGdA/YqUzI+bKb2xK/tYILHNdXCxk/DwGmGF5DjHgHHL3U5uCSM3B9tmMSXCHbvHbv5ybRUPWYiU8eF52b/9xRE3wYJ2d+/G8GDe+SnVGRuYexUgOh6jsv+CpKV1OxpNuVkCFSy2EW8aEnBc1e4kciiz7V5CEcrn9WHoGtIiBzV3Vp+M/OhDUtKNMdcP9rNp8m/gl2w0Sec+xNI8xhQs4rsQZSGQbsmAGLlPbHiLWBU4wPadsRTEmV6vEWWYld1i7WcP+EiyzAGuM1XVraGvoWyIpLM=
     on:
-      repo: joelfrederico/SciSalt
+      repo: joelfrederico/SLACtrac
       tags: true
   - provider: pypi
     user: JoelFrederico
@@ -33,7 +33,7 @@ deploy:
       secure: Hlt8jt0a+8JnuP2nfZnDOO5XOXZsITtg6TuEx4bC0Lz1sJjAm95DOzhUgNwf3oAPJcgF1uzJaCURmjNKDr+AH5Cki23lT0S09gdb0mxpTzN1NPvOJThIn7SWJumI3K+3C/lkqZpN8GffrsN5tU0MoT5VChsOnC2oaroxNRr6nzMgywqrBcP5kdIbU/3wlvM0kUOCH11Z7VXmVnmh/S3N7gKbqSQ3IdkMwgAcg53kARraTLwo/fgeoRDBTsVB1/lF/kF+u2EuvnFJavGhpiES9Cj/MC+0PQH72BoermNTR6lRWuMdVW3NQbV+TF4n17otehCxVpdNbMv3yyDKdweYk17u5WqPsbSlOXQZ0vXxoWcaYRpnmc1T5c39YDK3qBv0I3mr/q9OIn/3XEbN356i91LZQKUNg12CY0wLpVUAnn0sQsCfHphIieiYk3/M+GXJOqRXjHE0Fuy8ymCxnzia+ykb0HN7lO6z0uaYkPnWaAYDoBs3jEbfXTG5W7GLKmmD9zXgHFP6m62aLMLk5oIUtWbygQwey5Q1tyfSJgZP+AFeTZ1HZwEkmZFmLdesfTzIjxd5JQeB8oniKbj3FyEbMwns2ddjfAtq9jIv3klwqnBqGW2shhyZgyxOQGaM9hJOHwFnSWlllTw0zFV2UCllVbJ4Q6uMqgFo+ccr2ecDDwU=
     on:
       tags: true
-      repo: joelfrederico/SciSalt
+      repo: joelfrederico/SLACtrac
 
 notifications:
   slack:
