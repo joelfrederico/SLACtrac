@@ -11,7 +11,7 @@ SLACtrac Reference
 
 This reference manual details functions, modules, and objects
 included in SLACtrac, describing what they are and what they do.
-For learning how to use SLACtrac, see also :ref:`user`.
+For learning how to use SLACtrac, see the :ref:`user`.
 
 .. toctree::
    :maxdepth: 2

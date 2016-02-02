@@ -4,7 +4,7 @@
 PWFA
 ****
 
-.. currentmodule:: slactrac.PWFA
+.. module:: slactrac.PWFA
 
 The PWFA module makes scientific calculations for plasma wakefield acceleration
 (PWFA) much simpler. It is used in various simulations. It is currently not

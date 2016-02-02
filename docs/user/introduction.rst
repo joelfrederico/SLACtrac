@@ -3,6 +3,8 @@
 Introduction
 ============
 
+.. currentmodule:: slactrac
+
 This is the documentation for a Python package designed to make scientific data analysis easier. The main objective is to create a collection of interconnected methods frequently needed to visualize and analyze data using Numpy, Scipy, Matplotlib, and PyQt.
 
 Prerequisites
@@ -21,6 +23,13 @@ NumPy and SciPy
 `NumPy <http://www.numpy.org/>`_ has dependencies such as BLAS, LAPACK, and ATLAS, which makes downloading building form source is difficult. Installation via apt-get or `Macports <https://www.macports.org/>`_ is highly recommended in order to handle these dependencies. It is possible to `download <http://www.scipy.org/scipylib/download.html>`_ or to `build from source <http://www.scipy.org/scipylib/building/index.html#building>`_.
 
 `SciPy <http://www.scipy.org/>`_ is similar to `NumPy <http://www.numpy.org/>`_, and it is usually easiest to install the two at the same time - they have nearly identical install methods, to the point that at times it is difficult to tell the two apart. It is easiest to follow the `install instructions <http://www.scipy.org/install.html>`_.
+
+Periodictable
+^^^^^^^^^^^^^
+
+The :mod:`slactrac.PWFA` module depends on the periodic table for ion masses. This can be installed simply via pip::
+
+        pip install periodictable
 
 Options - Elegant Integration
 -----------------------------
