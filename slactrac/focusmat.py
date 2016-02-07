@@ -25,7 +25,8 @@ class Focus(_baseclass):
     name : str
         The name used to identify the element.
     """
-    def __init__(self, length=0, K1=0, order=1):
+    def __init__(self, length=0, K1=0, order=1, name=None):
+        self.name   = name
         self._order = int(order)
         self._type = 'focus'
         self._length = _np.float64(length)

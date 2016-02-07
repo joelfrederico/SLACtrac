@@ -24,6 +24,28 @@ class Ions2D(_Ions):
     A class to facilitate calculating ion motion in PWFA ion columns due to cylindrical, infinitely-long gaussian beams.
 
     .. versionadded:: 1.6
+
+    Parameters
+    ----------
+
+    species : :class:`periodictable.core.Element`
+        The plasma gas species, e.g. :class:`periodictable.H`.
+    N_e : float
+        The number of electrons.
+    sig_r : float
+        The standard deviation in :math:`r`.
+    sig_xi : float
+        The standard deviation in :math:`\\xi`.
+    r0_big : float
+        The maximum particle coordinate in :math:`r` to include.
+    n_samp : int
+        The number of samples.
+    order : int
+        The order to calculate to
+    rtol : float
+        A tolerance to calculate to. See :func:`scipy.integrate.odeint`.
+    atol : float
+        A tolerance to calculate to. See :func:`scipy.integrate.odeint`.
     """
     def __init__(self, species, N_e, sig_r, sig_xi, r0_big=None, n_samp=1000, order=5, rtol=None, atol=None):
         # ============================
