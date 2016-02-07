@@ -4,7 +4,7 @@ class baseclass(object):
     """
     def __init__(self, length=0, order=1, name=None):
         self.ind     = None
-        self.name    = name
+        self._name    = name
         self._length = length
         self._order  = order
         self._type   = None
@@ -26,3 +26,15 @@ class baseclass(object):
             string = string + ', {} = {}'.format(kname, kvalue)
 
         return string
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, namestr):
+        self._name = namestr
+
+    @property
+    def order(self):
+        return self._order

@@ -1,8 +1,10 @@
 import unittest
 import numpy as np
 import slactrac as st
+from .base import slactrac_element_base
 
-class slactrac_drift_test(unittest.TestCase):
+
+class slactrac_drift_test(slactrac_element_base, unittest.TestCase):
     def setUp(self):
         self._l     = 1.3
         self._order = 1
