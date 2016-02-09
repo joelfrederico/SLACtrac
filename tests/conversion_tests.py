@@ -24,15 +24,16 @@ class conversion_tests(unittest.TestCase):
 
     def eV2joule_test(self):
         joule = st.eV2joule(E*1e9)
-        test = 3.2604293097750002e-09
+        test  = 3.2604293097750002e-09
+        delta = 1e-15
         print('Evaluated: {}'.format(joule))
         print('Delta: {}'.format(joule-test))
-        self.assertAlmostEqual(joule, test, delta=1e-24)
+        self.assertAlmostEqual(joule, test, delta=delta)
 
     def gamma2GeV_test(self):
         En    = st.eV2joule(gamma)
         test  = 6.3805079524560005e-15
-        delta = 0
+        delta = 1e-21
         print('Evaluated: {}'.format(En))
         print('Delta: {}'.format(En-test))
         self.assertAlmostEqual(En, test, delta=delta)
