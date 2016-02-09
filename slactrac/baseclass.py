@@ -1,3 +1,5 @@
+import sys
+
 class baseclass(object):
     """
     Defines a basic beamline element. All beamline elements should have a *length*, an *order*, and a *name* to identify them.
@@ -11,6 +13,8 @@ class baseclass(object):
         self._ele_type = None
 
     def _not_allowed(self, *args, **kwargs):
+        import inspect
+        print(inspect.stack()[1][3])
         raise AttributeError('This attribute is not available for element type: {}'.format(self._type))
 
     K1        = property(_not_allowed, _not_allowed)

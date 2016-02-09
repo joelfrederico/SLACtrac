@@ -15,14 +15,10 @@ class Scatter(_baseclass):
     Parameters
     ----------
 
-    length : float
-        Length of the element.
     thickness : float
         The thickness of the foil in SI units.
     radlength : float
         The radiation lenght of the foil.
-    order : int
-        Order to calculate the transfer matrix.
     name : str
         The name used to identify the element.
     verbose : boolean
@@ -36,6 +32,14 @@ class Scatter(_baseclass):
         self.verbose = verbose
         self._x      = thickness
         self._X0     = radlength
+
+    @property
+    def thickness(self):
+        return self._x
+
+    @property
+    def radlength(self):
+        return self._X0
 
     def theta_rms(self, energy_GeV):
         """
