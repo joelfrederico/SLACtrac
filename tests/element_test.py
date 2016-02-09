@@ -2,7 +2,6 @@ import unittest
 import numpy as np
 import slactrac as st
 from .base import *  # noqa
-import types
 
 order     = 1
 l         = 1.3
@@ -14,23 +13,6 @@ old_gamma = 20e3
 new_gamma = 40e3
 
 
-def kwarg_gen(arg, arg_val):
-    def test_fun(self):
-        element_arg_val = getattr(self.element, arg)
-        self.assertEqual(element_arg_val, arg_val)
-
-    return test_fun
-
-
-def basic_setup(self, **kwargs):
-    for arg in kwargs:
-        arg_val = kwargs[arg]
-        setattr(self, '_{}'.format(arg), arg_val)
-        # test_fun = kwarg_gen(arg, arg_val)
-        test_name = '{}_test'.format(arg)
-        test = kwarg_gen(arg, arg_val)
-        setattr(self, test_name, test)
-        setattr(getattr(self, test_name), '__name__', test_name)
 
 
 class slactrac_drift_test(unittest.TestCase):
@@ -64,18 +46,12 @@ class slactrac_bend_test(unittest.TestCase):
         self.assertEqual(self.element.rotate, self._rotate)
 
     def R_test(self):
-        r = np.array([[  1.00000000e+00,   1.30000000e+00,   0.00000000e+00,
-                         0.00000000e+00,   0.00000000e+00,   0.00000000e+00],
-                      [ -1.65725745e-11,   1.00000000e+00,   0.00000000e+00,
-                         0.00000000e+00,   0.00000000e+00,   0.00000000e+00],
-                      [  0.00000000e+00,   0.00000000e+00,   9.98629535e-01,
-                         1.29940608e+00,   0.00000000e+00,   3.40261456e-02],
-                      [  0.00000000e+00,   0.00000000e+00,  -2.10792635e-03,
-                         9.98629535e-01,   0.00000000e+00,   5.23359562e-02],
-                      [  0.00000000e+00,   0.00000000e+00,   5.23359562e-02,
-                         3.40261456e-02,   1.00000000e+00,   5.93922549e-04],
-                      [  0.00000000e+00,   0.00000000e+00,   0.00000000e+00,
-                         0.00000000e+00,   0.00000000e+00,   1.00000000e+00]])
+        r = np.array([[  1.00000000e+00 , 1.30000000e+00 , 0.00000000e+00  , 0.00000000e+00 , 0.00000000e+00 , 0.00000000e+00],
+                      [ -1.65725745e-11 , 1.00000000e+00 , 0.00000000e+00  , 0.00000000e+00 , 0.00000000e+00 , 0.00000000e+00],
+                      [ 0.00000000e+00  , 0.00000000e+00 , 9.98629535e-01  , 1.29940608e+00 , 0.00000000e+00 , 3.40261456e-02],
+                      [ 0.00000000e+00  , 0.00000000e+00 , -2.10792635e-03 , 9.98629535e-01 , 0.00000000e+00 , 5.23359562e-02],
+                      [ 0.00000000e+00  , 0.00000000e+00 , 5.23359562e-02  , 3.40261456e-02 , 1.00000000e+00 , 5.93922549e-04],
+                      [ 0.00000000e+00  , 0.00000000e+00 , 0.00000000e+00  , 0.00000000e+00 , 0.00000000e+00 , 1.00000000e+00]])
 
         self.assertTrue(array_tol(self.element.R, r, 1e-10))
 
@@ -117,6 +93,7 @@ basic_setup(slactrac_focus_test, length=l, K1=K1, order=order, name=name)
 
 thickness = 50e-6
 radlength = 12e-2
+
 
 class slactrac_scatter_test(unittest.TestCase):
     def setUp(self):

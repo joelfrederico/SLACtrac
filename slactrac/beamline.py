@@ -40,7 +40,6 @@ class Beamline(_baseclass):
     _order   = int(1)
 
     def __init__(self, element_list, gamma, beam_x=None, beam_y=None, verbose=False):
-        self.verbose = verbose
         self._gamma   = _np.float64(gamma)
         self.beam_x   = _copy.deepcopy(beam_x)
         self.beam_y   = _copy.deepcopy(beam_y)
@@ -56,12 +55,24 @@ class Beamline(_baseclass):
                 _warnings.warn('Missing name for {}-th element of beamline element list'.format(i), SyntaxWarning, stacklevel=2)
             element.ind = i
 
+        self.verbose = verbose
+
     def change_verbose(self, verbose=False):
         """
         Change whether the beamline is verbose.
         """
         for i, element in enumerate(self.elements):
             self.elements[i].verbose = verbose
+
+        self._verbose = verbose
+
+    @property
+    def verbose(self):
+        return self._verbose
+
+    @verbose.setter
+    def verbose(self, val):
+        self.change_verbose(verbose=val)
 
     # Define property length
     @property

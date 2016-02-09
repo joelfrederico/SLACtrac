@@ -89,7 +89,7 @@ class BeamParams(object):
     @property
     def beta(self):
         """
-        The beta function of the beam
+        The beta function of the beam.
         """
         return self._beta
 
@@ -98,6 +98,17 @@ class BeamParams(object):
         if not (value > 0):
             raise ValueError('Beta must be greater than zero: requested beta={}.'.format(value))
         self._beta = value
+
+    @property
+    def alpha(self):
+        """
+        The alpha function of the beam.
+        """
+        return self._alpha
+
+    @alpha.setter
+    def alpha(self, value):
+        self._alpha = value
 
     @property
     def betastar(self):
