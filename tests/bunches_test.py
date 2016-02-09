@@ -9,6 +9,7 @@ alpha    = 0.3
 emit_n   = 50e-6
 gamma_en = 39824
 
+
 class slactrac_BeamParams_test(unittest.TestCase):
     def setUp(self):
         self.beamparams = st.BeamParams(beta=beta, alpha=alpha, emit_n=emit_n, gamma_en=gamma_en)
@@ -28,7 +29,5 @@ class slactrac_BeamParams_test(unittest.TestCase):
         print(avg_xxp)
         print(avg_xxp-test)
         self.assertAlmostEqual(avg_xxp, test, delta=delta)
-
-    # def beta(self):
 
 basic_setup(slactrac_BeamParams_test, testname='beamparams', beta=beta, alpha=alpha)
