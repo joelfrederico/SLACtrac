@@ -62,6 +62,9 @@ class GaussPartBeam(object):
         else:
             self._xi = _np.random.normal(scale=self.sig_xi, size=self.nparts)
 
+    def phi(self, beta, alpha):
+        return _np.arctan2(self._xp - alpha, (self._x-alpha)/beta)
+
     @property
     def sig_xi(self):
         """

@@ -41,16 +41,17 @@ class SimBeam(object):
         # ==================================
         # Set up coordinate arrays
         # ==================================
-        s = _np.linspace(0, 20*2*_np.pi*self.plasma.beta_matched(E0), s_pts)
+        s = _np.linspace(0, 10*2*_np.pi*self.plasma.beta_matched(E0), s_pts)
         self._s = s
         y = _np.empty([nparts, s.shape[0], 2])
-        self._phi = _np.empty([nparts, s.shape[0]])
+        # self._phi = _np.empty([nparts, s.shape[0]])
         
         # ==================================
         # Defaults of motion
         # ==================================
-        k0 = self.plasma.k_ion(E0)
-        rtk0 = _np.sqrt(k0)
+        self._k0 = self.plasma.k_ion(E0)
+        # beta0 = 1/_np.sqrt(k0)
+        rtk0 = _np.sqrt(self._k0)
 
         k_xi = _np.sqrt(spc.elementary_charge**2 * self._n_p_cgs / (4*_np.pi*spc.epsilon_0*spc.electron_mass*spc.speed_of_light**2) ) / _np.cos(self.beam.xi) 
 
@@ -71,13 +72,14 @@ class SimBeam(object):
             # y[i, :, :] = sp.integrate.odeint(self.ion_force, y0, s, args=(E,))
             y[i, :, 0] = -x0*rtk*_np.sin(rtk*s) + xp0*_np.cos(rtk*s)
             y[i, :, 1] = x0*_np.cos(rtk*s) + xp0*_np.sin(rtk*s)/rtk
-            self._phi[i, :] = _np.mod((rtk-rtk0)*s+_np.pi, 2*_np.pi) - _np.pi
+            # self._phi[i, :] = _np.mod((rtk-rtk0)*s+_np.pi, 2*_np.pi) - _np.pi
         
         # ==================================
         # Extract particle coordinates
         # ==================================
-        self._x = y[:, :, 1]
-        self._xp = y[:, :, 0]
+        self._x   = y[:, :, 1]
+        self._xp  = y[:, :, 0]
+        self._phi = _np.arctan2(self._xp, self._x*rtk0)
 
     @property
     def k_xi(self):
@@ -85,7 +87,6 @@ class SimBeam(object):
         Ion focusing wavenumber :math:`k_\\xi`.
         """
         return self._k_xi
-
 
     @property
     def phi(self):
